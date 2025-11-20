@@ -1,0 +1,412 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - dialog "Alert" [ref=e7]:
+          - generic [ref=e8]: Alert
+          - generic [ref=e10]:
+            - img [ref=e13]
+            - generic [ref=e14]:
+              - generic [ref=e17]:
+                - text: With effect from 28th October 2025, only Aadhaar authenticated users are allowed to book tickets between 8 AM to 10 AM on the first day of opening of reserved ticket booking.
+                - text: 28 अक्टूबर 2025 से, केवल आधार प्रमाणित उपयोगकर्ताओं को आरक्षित टिकट बुकिंग खुलने के पहले दिन सुबह 8 बजे से 10 बजे के बीच टिकट बुक करने की अनुमति होगी।
+              - button "Confirmation. <br/>With effect from 28th October 2025, only Aadhaar authenticated users are allowed to book tickets between 8 AM to 10 AM on the first day of opening of reserved ticket booking. <br/><br/>28 अक्टूबर 2025 से, केवल आधार प्रमाणित उपयोगकर्ताओं को आरक्षित टिकट बुकिंग खुलने के पहले दिन सुबह 8 बजे से 10 बजे के बीच टिकट बुक करने की अनुमति होगी। . Press OK to confirm" [ref=e19] [cursor=pointer]: OK
+        - banner [ref=e21]:
+          - generic [ref=e22]:
+            - img "Indian railway logo" [ref=e24]
+            - img "IRCTC Logo" [ref=e26]
+          - generic [ref=e29] [cursor=pointer]: 
+          - text:   
+        - text:              
+    - generic [ref=e36]:
+      - generic [ref=e39]:
+        - generic:
+          - generic [ref=e40]:
+            - img "Pnr Icon" [ref=e42]
+            - link "PNR Status opens a new window" [ref=e43] [cursor=pointer]:
+              - /url: http://www.indianrail.gov.in/enquiry/PNR/PnrEnquiry.html?locale=en
+              - generic [ref=e44]: PNR STATUS
+          - generic [ref=e45]:
+            - img "Pnr Icon" [ref=e47]
+            - link "Reservation Chart. Website will be opened in new tab" [ref=e48] [cursor=pointer]:
+              - /url: https://www.irctc.co.in/online-charts/
+              - generic [ref=e49]: CHARTS / VACANCY
+        - generic [ref=e50]:
+          - generic [ref=e53]: BOOK TICKET
+          - generic:
+            - generic [ref=e54]:
+              - generic [ref=e55]:
+                - generic [ref=e56]:
+                  - generic [ref=e58]: 
+                  - searchbox "Enter From station. Input is Mandatory." [ref=e61]
+                  - generic: From
+                  - button "Sweep from and to station." [ref=e62] [cursor=pointer]:
+                    - generic [ref=e63]: 
+                - generic [ref=e64]:
+                  - generic [ref=e66]: 
+                  - searchbox "Enter To station. Input is Mandatory." [ref=e69]
+                  - generic: To
+              - generic [ref=e70]:
+                - generic [ref=e71]:
+                  - generic [ref=e73]: 
+                  - generic "Enter Journey Date. Formate D.D./.M.M./.Y.Y.Y.Y. Input is Mandatory." [ref=e74]:
+                    - textbox [ref=e76]: 20/11/2025
+                  - generic: DD/MM/YYYY *
+                - generic [ref=e77]:
+                  - generic [ref=e79]: 
+                  - generic [ref=e81] [cursor=pointer]:
+                    - generic [ref=e82]:
+                      - listbox "All Classes"
+                    - generic [ref=e84]: All Classes
+                    - button "" [ref=e85]:
+                      - generic [ref=e86]: 
+            - generic [ref=e88]:
+              - generic [ref=e90]: 
+              - generic [ref=e93] [cursor=pointer]:
+                - generic [ref=e94]:
+                  - listbox "GENERAL"
+                - generic [ref=e96]: GENERAL
+                - button "" [ref=e97]:
+                  - generic [ref=e98]: 
+            - generic [ref=e100]:
+              - generic [ref=e101]:
+                - checkbox "Check for DIVYAANG Concession Booking." [ref=e102]
+                - generic [ref=e103] [cursor=pointer]: Person With Disability Concession
+              - generic [ref=e104]:
+                - checkbox "Check to fetch trains runs on other days than you are searching for." [ref=e105]
+                - generic [ref=e106] [cursor=pointer]: Flexible With Date
+              - generic [ref=e107]:
+                - checkbox "Check for Available Vacant Berth" [ref=e108]
+                - generic [ref=e109] [cursor=pointer]: Train with Available Berth
+              - generic [ref=e110]:
+                - checkbox "Check for pass Booking" [ref=e111]
+                - generic [ref=e112] [cursor=pointer]: Railway Pass Concession
+            - generic [ref=e113]:
+              - button "Search" [ref=e115] [cursor=pointer]
+              - button "Easy Booking on AskDISHA" [ref=e117] [cursor=pointer]
+        - paragraph [ref=e119]:
+          - generic [ref=e120]:
+            - generic [ref=e122]:
+              - text: "Festival Round Trip Scheme:"
+              - link "User Guide" [ref=e123] [cursor=pointer]:
+                - /url: https://contents.irctc.co.in/en/userguidertrip.pdf
+              - text: and
+              - link "Terms & Conditions" [ref=e124] [cursor=pointer]:
+                - /url: https://contents.irctc.co.in/irctc/en/RoundTripTnC.pdf
+            - generic [ref=e125]:
+              - text: Customers can use enhanced interface for their IRCTC related queries!!
+              - link "https://equery.irctc.co.in" [ref=e126] [cursor=pointer]:
+                - /url: https://equery.irctc.co.in/
+              - text: "Customer Care Numbers : Dial 14646 (Within India); Call: +91-8044647999 / +91-8035734999(Outside India)"
+      - generic [ref=e130]:
+        - generic [ref=e131]: INDIAN RAILWAYS
+        - text: SafetySecurityPunctuality
+      - iframe [ref=e136]:
+        - link [ref=f1e2] [cursor=pointer]:
+          - /url: https://googleads.g.doubleclick.net/pcs/click?xai=AKAOjsuwFFEEYC1rx1-sBasF2ARxKVmsqneqvRNXsARanUu3fVAj5Er5oZu1SjiwgsaXCSO3FXGzIfd_9Q11IQ6-Ph4sWcfxMJi1yz55x23GJMDQ1iZdhtJf6dykievtkKpFgiuUszddoUP3vxq_l3MrZBo1hkqULgiXCmU0MTNaLAyApUnCkLj1ou5vmrg2LWRqm_n8xzCyXINYNO9Cwu69yiGbK-Z3Tmaa3tSmAhchCOmd1vBK-HZdNsAIWxOxO-kPXzkj0uAk_iZpyf0O0p6BFQ42Yhin3XRmmWol9DkCGiReXJ5lWyKewdD-flKLkTXM8OyMq8ZOKsgsnlgdV-4yTkM7aDJL2gUPzmW4eSur_9u1QWD-EU-QvLGzU_y8MiCHebYj7Q&sai=AMfl-YSTQI6ls2KVVlv260EpZjuaVvnG4XQ4iux_Rz4SGI2zp14xa9zFUaueXHXh8_wcty6LzaGsx-FrJlGwhN6OVZ91AY4xydXu2OWWCg3DYiaqOgRMWpp0umEorrk7R-TVQumcCI6vpdmCCBdiR8NMkGcv3H4yEse2j-eCTjWWqGDtTe3EQKjxKY0F2xbmUHwmMxxnzuicEoC7QrOGKKhfQdrJ6p3AiPu3I_-i45cYnfKK2swN5VrkgOLAL0IkKzZK-0er8Fo&sig=Cg0ArKJSzJn1DoM1unug&fbs_aeid=%5Bgw_fbsaeid%5D&adurl=https://beneficiary.nha.gov.in/
+      - generic [ref=e138]:
+        - heading "Have you not found the right one? Find a service suitable for you here." [level=2] [ref=e139]:
+          - text: Have you not found the right one?
+          - text: Find a service suitable for you here.
+        - list [ref=e140]:
+          - listitem [ref=e141]:
+            - link "Flight opens a new window" [ref=e142] [cursor=pointer]:
+              - /url: https://www.air.irctc.co.in/
+              - generic [ref=e144]: FLIGHTS
+          - listitem [ref=e145]:
+            - link "HOTELS" [ref=e146] [cursor=pointer]:
+              - /url: https://www.hotels.irctc.co.in
+              - generic [ref=e148]: HOTELS
+          - listitem [ref=e149]:
+            - link " RAIL DRISHTI" [ref=e150] [cursor=pointer]:
+              - /url: https://raildrishti.indianrailways.gov.in/
+              - generic [ref=e151]: 
+              - generic [ref=e152]: RAIL DRISHTI
+          - listitem [ref=e153]:
+            - link "E-CATERING" [ref=e154] [cursor=pointer]:
+              - /url: https://www.ecatering.irctc.co.in/
+              - generic [ref=e156]: E-CATERING
+          - listitem [ref=e157]:
+            - link " BUS" [ref=e158] [cursor=pointer]:
+              - /url: https://www.bus.irctc.co.in/home
+              - generic [ref=e159]: 
+              - generic [ref=e160]: BUS
+        - list [ref=e161]:
+          - listitem [ref=e162]:
+            - link "HOLIDAY PACKAGES" [ref=e163] [cursor=pointer]:
+              - /url: https://www.irctctourism.com/tourpacakage_search?searchKey=&tagType=&travelType=&category=
+              - generic [ref=e165]: HOLIDAY PACKAGES
+          - listitem [ref=e166]:
+            - link "TOURIST TRAIN" [ref=e167] [cursor=pointer]:
+              - /url: https://www.irctctourism.com/bharatgaurav
+              - generic [ref=e169]: TOURIST TRAIN
+          - listitem [ref=e170]:
+            - link "HILL RAILWAYS" [ref=e171] [cursor=pointer]:
+              - /url: https://www.irctctourism.com/gallery/
+              - generic [ref=e173]: HILL RAILWAYS
+          - listitem [ref=e174]:
+            - link "CHARTER TRAIN" [ref=e175] [cursor=pointer]:
+              - /url: https://www.ftr.irctc.co.in/ftr/
+              - generic [ref=e177]: CHARTER TRAIN
+          - listitem [ref=e178]:
+            - link "GALLERY" [ref=e179] [cursor=pointer]:
+              - /url: https://www.irctctourism.com/gallery/
+              - generic [ref=e181]: GALLERY
+      - generic [ref=e184]:
+        - heading "HOLIDAYS" [level=2] [ref=e185]
+        - generic [ref=e186]:
+          - generic [ref=e188]:
+            - img "Maharajas Express" [ref=e190]
+            - generic [ref=e191]:
+              - heading "Maharajas' Express" [level=3] [ref=e192]
+              - paragraph [ref=e193]: Redefining Royalty, Luxury and Comfort, Maharajas' express takes you on a sojourn to the era of bygone stately splendour of princely states. Sylvan furnishings, elegant ambience and modern amenities are amalgamated for an “Experience Unsurpassed”. It has been a winner of “World’s Leading Luxury train” by World Travel Awards consecutively for last six years.
+              - link "More info about Maharaja's Express" [ref=e194] [cursor=pointer]:
+                - /url: http://www.the-maharajas.com/
+                - strong [ref=e195]: Read More
+                - generic [ref=e196]: 
+          - generic [ref=e198]:
+            - img "International Packages" [ref=e200]
+            - generic [ref=e201]:
+              - heading "International Packages" [level=3] [ref=e202]
+              - paragraph [ref=e203]: Best deals in International Holiday packages, handpicked by IRCTC, for Thailand, Dubai, Sri Lanka, Hong Kong, China, Macau, Bhutan, Nepal, U.K., Europe, USA, Australia etc. The packages are inclusive of sightseeing, meals, visa charges and overseas medical insurance to give you a hassle-free and memorable experience.
+              - link "Read More " [ref=e204] [cursor=pointer]:
+                - /url: https://www.irctctourism.com/#/tourpacakage_search?searchKey=&tagType=&travelType=International&sector=All
+                - strong [ref=e205]: Read More
+                - generic [ref=e206]: 
+          - generic [ref=e208]:
+            - img "Domestic Air Packages" [ref=e210]
+            - generic [ref=e211]:
+              - heading "Domestic Air Packages" [level=3] [ref=e212]
+              - paragraph [ref=e213]: Be it the spiritual devotee seeking blessings of Tirupati, Shirdi or Mata Vaishno Devi or the leisure traveller wanting to relish the Blue mountains of North East, Sand-dunes of Rajasthan, Hamlets of Ladakh, Wonders of Himalayas, Serene lakes or Picturesque Islands, IRCTC has it all. Discover India through IRCTC!
+              - link "Read More " [ref=e214] [cursor=pointer]:
+                - /url: https://www.irctctourism.com/#/tourpacakage_search?searchKey=&tagType=&travelType=Domestic&sector=All
+                - strong [ref=e215]: Read More
+                - generic [ref=e216]: 
+          - generic [ref=e218]:
+            - img "Tourist Trains" [ref=e220]
+            - generic [ref=e221]:
+              - heading "Bharat Gaurav Tourist Train" [level=3] [ref=e222]
+              - paragraph [ref=e223]: IRCTC operates Bharat Gaurav Tourist Train having AC III-Tier accommodation on train specially designed to promote domestic tourism in India. This train runs on various theme based circuits covering pilgrimage and heritage destinations in its itinerary on a 5 days to 20 days trip and showcase India’s rich cultural heritage.
+              - link "Read More " [ref=e224] [cursor=pointer]:
+                - /url: https://www.irctctourism.com/bharatgaurav
+                - strong [ref=e225]: Read More
+                - generic [ref=e226]: 
+          - generic [ref=e228]:
+            - img "Rail/ Land Tour Packages" [ref=e230]
+            - generic [ref=e231]:
+              - heading "Rail Tour Packages" [level=3] [ref=e232]
+              - paragraph [ref=e233]: IRCTC offers Exclusive Rail tour packages with confirmed train tickets, sight-seeing and meals for enchanting Nilgiri Mountains, Darjeeling, Kullu Manali, Kashmir, Gangtok or divine tours of Mata Vaishno Devi, Rameswaram, Madurai, Shirdi, Tirupati etc. Holiday packages/ Land packages to these destinations are also available.
+              - link "Read More " [ref=e234] [cursor=pointer]:
+                - /url: https://www.irctctourism.com/#/tourpkgs
+                - strong [ref=e235]: Read More
+                - generic [ref=e236]: 
+    - generic [ref=e242]:
+      - generic [ref=e243]:
+        - text: Get Connected with us on social networks
+        - generic [ref=e244]:
+          - link "I.R.C.T.C. Official instagram page. opens a new windows" [ref=e245] [cursor=pointer]:
+            - /url: https://www.facebook.com/IRCTCofficial/
+            - generic [ref=e246]: 
+          - link "I.R.C.T.C. Official whatsapp page. opens a new windows" [ref=e247] [cursor=pointer]:
+            - /url: https://whatsapp.com/channel/0029Va4wpCW84OmKdPNQi41P
+            - img [ref=e249]
+          - link "I.R.C.T.C. Official youtube page. opens a new windows" [ref=e250] [cursor=pointer]:
+            - /url: https://youtube.com/c/IRCTCOFFICIAL
+            - generic [ref=e251]: 
+          - link "I.R.C.T.C. Official facebook page. opens a new windows" [ref=e252] [cursor=pointer]:
+            - /url: https://instagram.com/irctc.official?igshid=yyg5byow704l
+            - generic [ref=e253]: 
+          - link "I.R.C.T.C. Official linkedin page. opens a new windows" [ref=e254] [cursor=pointer]:
+            - /url: https://www.linkedin.com/company/irctcofficial
+            - generic [ref=e255]: 
+          - link "I.R.C.T.C. Official telegram page. opens a new windows" [ref=e256] [cursor=pointer]:
+            - /url: https://t.me/IRCTC_Official
+            - generic [ref=e257]: 
+          - link "I.R.C.T.C. Official pinterest page. opens a new windows" [ref=e258] [cursor=pointer]:
+            - /url: https://in.pinterest.com/irctcofficial/
+            - generic [ref=e259]: 
+          - link "I.R.C.T.C. Official tumblr page. opens a new windows" [ref=e260] [cursor=pointer]:
+            - /url: https://irctcofficial.tumblr.com/
+            - generic [ref=e261]: 
+          - link "I.R.C.T.C. Official Koo page. opens a new windows" [ref=e262] [cursor=pointer]:
+            - /url: https://www.kooapp.com/profile/irctcofficial
+            - img [ref=e264]
+          - link "I.R.C.T.C. Official twitter page. opens a new windows" [ref=e265] [cursor=pointer]:
+            - /url: https://twitter.com/IRCTCofficial
+            - generic [ref=e266]: 
+      - generic [ref=e270]:
+        - generic [ref=e272]:
+          - button "IRCTC Trains " [ref=e273] [cursor=pointer]:
+            - generic [ref=e274]:
+              - text: IRCTC Trains
+              - generic [ref=e275]: 
+          - button "General Information " [ref=e276] [cursor=pointer]:
+            - generic [ref=e277]:
+              - text: General Information
+              - generic [ref=e278]: 
+          - button "Important Information " [ref=e279] [cursor=pointer]:
+            - generic [ref=e280]:
+              - text: Important Information
+              - generic [ref=e281]: 
+          - button "Agents " [ref=e282] [cursor=pointer]:
+            - generic [ref=e283]:
+              - text: Agents
+              - generic [ref=e284]: 
+          - button "Enquiries " [ref=e285] [cursor=pointer]:
+            - generic [ref=e286]:
+              - text: Enquiries
+              - generic [ref=e287]: 
+        - generic [ref=e289]:
+          - button "How To " [ref=e290] [cursor=pointer]:
+            - generic [ref=e291]:
+              - text: How To
+              - generic [ref=e292]: 
+          - button "IRCTC Official App " [ref=e293] [cursor=pointer]:
+            - generic [ref=e294]:
+              - text: IRCTC Official App
+              - generic [ref=e295]: 
+          - button "Advertise with us " [ref=e296] [cursor=pointer]:
+            - generic [ref=e297]:
+              - text: Advertise with us
+              - generic [ref=e298]: 
+          - button "Refund Rules " [ref=e299] [cursor=pointer]:
+            - generic [ref=e300]:
+              - text: Refund Rules
+              - generic [ref=e301]: 
+          - button "Person With Disability Facilities " [ref=e302] [cursor=pointer]:
+            - generic [ref=e303]:
+              - text: Person With Disability Facilities
+              - generic [ref=e304]: 
+        - generic [ref=e306]:
+          - button "IRCTC eWallet " [ref=e307] [cursor=pointer]:
+            - generic [ref=e308]:
+              - text: IRCTC eWallet
+              - generic [ref=e309]: 
+          - button "IRCTC Co-branded Card Benefits " [ref=e310] [cursor=pointer]:
+            - generic [ref=e311]:
+              - text: IRCTC Co-branded Card Benefits
+              - generic [ref=e312]: 
+          - button "IRCTC-iPAY Payment Gateway " [ref=e313] [cursor=pointer]:
+            - generic [ref=e314]:
+              - text: IRCTC-iPAY Payment Gateway
+              - generic [ref=e315]: 
+          - button "IRCTC Zone " [ref=e316] [cursor=pointer]:
+            - generic [ref=e317]:
+              - text: IRCTC Zone
+              - generic [ref=e318]: 
+          - button "DMRC Ticket Booking at IRCTC " [ref=e319] [cursor=pointer]:
+            - generic [ref=e320]:
+              - text: DMRC Ticket Booking at IRCTC
+              - generic [ref=e321]: 
+        - generic [ref=e323]:
+          - button "For Newly Migrated Agents " [ref=e325] [cursor=pointer]:
+            - generic [ref=e326]:
+              - text: For Newly Migrated Agents
+              - generic [ref=e327]: 
+          - button "Mobile Zone " [ref=e328] [cursor=pointer]:
+            - generic [ref=e329]:
+              - text: Mobile Zone
+              - generic [ref=e330]: 
+          - button "Policies " [ref=e331] [cursor=pointer]:
+            - generic [ref=e332]:
+              - text: Policies
+              - generic [ref=e333]: 
+          - button "Ask Disha ChatBot " [ref=e334] [cursor=pointer]:
+            - generic [ref=e335]:
+              - text: Ask Disha ChatBot
+              - generic [ref=e336]: 
+          - button "About us " [ref=e337] [cursor=pointer]:
+            - generic [ref=e338]:
+              - text: About us
+              - generic [ref=e339]: 
+        - generic [ref=e342]:
+          - button "Help & Support" [ref=e343] [cursor=pointer]
+          - button "E-Pantry " [ref=e344] [cursor=pointer]:
+            - generic [ref=e345]:
+              - text: E-Pantry
+              - generic [ref=e346]: 
+      - generic [ref=e349]:
+        - img "Secured Payment Partner" [ref=e352]
+        - generic [ref=e354]:
+          - paragraph [ref=e355]: Copyright Â© 2025 - www.irctc.co.in. All Rights Reserved
+          - paragraph [ref=e356]:
+            - text: Designed and Hosted by
+            - strong [ref=e357]:
+              - link "CRIS" [ref=e358] [cursor=pointer]:
+                - /url: http://cris.org.in
+          - paragraph [ref=e359]:
+            - strong [ref=e360]:
+              - link "Compatible Browsers link opens a new windows" [ref=e361] [cursor=pointer]:
+                - /url: http://contents.irctc.co.in/en/BetaSiteCompatibleBrowser.html
+                - text: Compatible Browsers
+          - paragraph
+  - generic [ref=e362] [cursor=pointer]:
+    - generic [ref=e363]:
+      - link "drag logo" [ref=e364]:
+        - /url: https://adgebra.co/?utm_source=irctc&utm_medium=web&utm_id=cuboid
+        - img "drag" [ref=e365]
+        - img "logo" [ref=e366]
+      - img [ref=e367]
+    - iframe [ref=e368]:
+      - generic [ref=f2e2] [cursor=pointer]:
+        - link "Creative 1" [ref=f2e3]:
+          - /url: https://adgebra.co.in/clicktracker/click?p1=308646&p2=35925&p3=&p4=1&p19=62556&p20=305480&p24=10&token=71925112003610&uniqueId=a3c1e270000019a9f76162e0000231540000f45c00012a5200004b5a6efa3d8ed8d36db0c&p5=https%3A%2F%2Fcreditcard-rblbank.my.site.com%2Fs%2Fcobranding%3Fpartner%3Dirctc%26cs%3Dirctc%26cg%3Dcuboid%26utm_campaign%3Dirctc-cuboid%26utm_medium%3Dcuboid%26utm_source%3Dirctc&deviceId=2&deviceBrand=Unknown&deviceModel=Unknown&osType=Unknown&osVersion=Unknown
+          - img "Creative 1" [ref=f2e4]
+        - link "Creative 2" [ref=f2e5]:
+          - /url: https://adgebra.co.in/clicktracker/click?p1=308647&p2=35925&p3=&p4=1&p19=62556&p20=305480&p24=10&token=71925112003610&uniqueId=a3c1e270000019a9f76162e0000231540000f45c00012a5200004b5a7efa3d8ed8d36db0c&p5=https%3A%2F%2Fcreditcard-rblbank.my.site.com%2Fs%2Fcobranding%3Fpartner%3Dirctc%26cs%3Dirctc%26cg%3Dcuboid%26utm_campaign%3Dirctc-cuboid%26utm_medium%3Dcuboid%26utm_source%3Dirctc&deviceId=2&deviceBrand=Unknown&deviceModel=Unknown&osType=Unknown&osVersion=Unknown
+          - img "Creative 2" [ref=f2e6]
+        - link "Creative 3" [ref=f2e7]:
+          - /url: https://adgebra.co.in/clicktracker/click?p1=308648&p2=35925&p3=&p4=1&p19=62556&p20=305480&p24=10&token=71925112003610&uniqueId=a3c1e270000019a9f76162e0000231540000f45c00012a5200004b5a8efa3d8ed8d36db0c&p5=https%3A%2F%2Fcreditcard-rblbank.my.site.com%2Fs%2Fcobranding%3Fpartner%3Dirctc%26cs%3Dirctc%26cg%3Dcuboid%26utm_campaign%3Dirctc-cuboid%26utm_medium%3Dcuboid%26utm_source%3Dirctc&deviceId=2&deviceBrand=Unknown&deviceModel=Unknown&osType=Unknown&osVersion=Unknown
+          - img "Creative 3" [ref=f2e8]
+        - link "Creative 4" [ref=f2e9]:
+          - /url: https://adgebra.co.in/clicktracker/click?p1=308649&p2=35925&p3=&p4=1&p19=62556&p20=305480&p24=10&token=71925112003610&uniqueId=a3c1e270000019a9f76162e0000231540000f45c00012a5200004b5a9efa3d8ed8d36db0c&p5=https%3A%2F%2Fcreditcard-rblbank.my.site.com%2Fs%2Fcobranding%3Fpartner%3Dirctc%26cs%3Dirctc%26cg%3Dcuboid%26utm_campaign%3Dirctc-cuboid%26utm_medium%3Dcuboid%26utm_source%3Dirctc&deviceId=2&deviceBrand=Unknown&deviceModel=Unknown&osType=Unknown&osVersion=Unknown
+          - img "Creative 4" [ref=f2e10]
+        - link "Creative 5":
+          - /url: https://adgebra.co.in/clicktracker/click?p1=308650&p2=35925&p3=&p4=1&p19=62556&p20=305480&p24=10&token=71925112003610&uniqueId=a3c1e270000019a9f76162e0000231540000f45c00012a5200004b5aaefa3d8ed8d36db0c&p5=https%3A%2F%2Fcreditcard-rblbank.my.site.com%2Fs%2Fcobranding%3Fpartner%3Dirctc%26cs%3Dirctc%26cg%3Dcuboid%26utm_campaign%3Dirctc-cuboid%26utm_medium%3Dcuboid%26utm_source%3Dirctc&deviceId=2&deviceBrand=Unknown&deviceModel=Unknown&osType=Unknown&osVersion=Unknown
+          - img "Creative 5"
+        - link "Creative 6":
+          - /url: https://adgebra.co.in/clicktracker/click?p1=308651&p2=35925&p3=&p4=1&p19=62556&p20=305480&p24=10&token=71925112003610&uniqueId=a3c1e270000019a9f76162e0000231540000f45c00012a5200004b5abefa3d8ed8d36db0c&p5=https%3A%2F%2Fcreditcard-rblbank.my.site.com%2Fs%2Fcobranding%3Fpartner%3Dirctc%26cs%3Dirctc%26cg%3Dcuboid%26utm_campaign%3Dirctc-cuboid%26utm_medium%3Dcuboid%26utm_source%3Dirctc&deviceId=2&deviceBrand=Unknown&deviceModel=Unknown&osType=Unknown&osVersion=Unknown
+          - img "Creative 6"
+  - iframe [ref=e370]:
+    - link "Take a small step today & secure a financially independent future tomorrow. *T&C AD IPRU Signature SIP+" [ref=f3e5] [cursor=pointer]:
+      - /url: https://adgebra.co.in/clicktracker/click?p1=306903&p2=36702&p3=&p5=&p6=&p7=9&p18=&langId=2&languagePriority=2&slotId=1&templateId=6715&p19=64167&p20=304348&gaid=&isIframe=&token=71925112003610&uid=&p21=&p22=USD&p23=&p24=3&uniqueId=a3c04020000019a9f762feb000023d780000faa70001293700004aed7f22b10fead0a9066&deviceId=2&deviceBrand=Unknown&deviceModel=Unknown&osType=Windows&osVersion=10
+      - img [ref=f3e6]
+      - generic [ref=f3e7]: Take a small step today & secure a financially independent future tomorrow. *T&C
+      - generic [ref=f3e8]: AD
+      - generic [ref=f3e9]: IPRU Signature SIP+
+      - img [ref=f3e10]
+  - link [ref=e371] [cursor=pointer]:
+    - /url: https://amzn.to/3i4lgCr
+    - img [ref=e372]
+  - generic [ref=e374] [cursor=pointer]:
+    - img [ref=e375]
+    - img [ref=e376]
+  - generic [ref=e377]:
+    - generic [ref=e378] [cursor=pointer]:
+      - img [ref=e379]
+      - img "Disha Avatar" [ref=e380]
+      - generic [ref=e381]:
+        - heading "AskDisha 2.0" [level=3] [ref=e382]
+        - paragraph [ref=e383]: NextGen AI Ticketing
+      - generic [ref=e384]:
+        - img "Ticket icon" [ref=e385]
+        - paragraph [ref=e386]: Book Ticket
+    - iframe [ref=e389]:
+      - generic [ref=f4e3]:
+        - generic [ref=f4e10]:
+          - textbox "Query textbox" [ref=f4e11]:
+            - /placeholder: Type or Ask Disha...
+          - img "Language Menu Button" [ref=f4e12] [cursor=pointer]
+          - img "Microphone Button" [ref=f4e13] [cursor=pointer]
+        - generic [ref=f4e14]:
+          - link "Terms of Use" [ref=f4e16] [cursor=pointer]:
+            - /url: https://corover.ai/terms-conditions/
+          - link "CoRover Logo" [ref=f4e18] [cursor=pointer]:
+            - /url: https://corover.ai/
+            - img "CoRover Logo" [ref=f4e19]
+          - link "Privacy Policy" [ref=f4e21] [cursor=pointer]:
+            - /url: https://corover.ai/privacy-policy/
+```
