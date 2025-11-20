@@ -18,8 +18,11 @@
   "devDependencies": {
     "@playwright/test": "^1.56.1",
     "@types/node": "^24.10.1"
+<<<<<<< HEAD
   },
   "dependencies": {
     "dotenv": "^17.2.3"
+=======
+>>>>>>> a18c69726a044d51c662822a77d9c0a720ccc068
   }
 }
