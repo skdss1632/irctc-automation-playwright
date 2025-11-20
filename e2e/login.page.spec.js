@@ -11,7 +11,7 @@ test("should validate user login workflow successfully", async ({ page }) => {
   // await page.getByRole("button", { name: "OK" }).click();
 
 
-  // precise login button
+  // precise login button..
   await page.getByRole("link", { name: /click here to login/i }).click();
 
   // await page.fill("#username", "");
