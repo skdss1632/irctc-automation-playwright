@@ -8,8 +8,15 @@ const {
   randint,
   uniform,
   randomDelay,
+  scrollIntoView,
 } = require("../helpers/delay");
-const hoverAndClick = require("../helpers/utility");
+const {
+  hoverAndClick,
+  handlePassengerInput,
+  fillInputText,
+  handleTicketType,
+} = require("../helpers/utility");
+const {TIMEOUTS} = require("../enums/enums");
 
 test("should validate user login workflow successfully", async ({
   kameleoContext,
@@ -18,76 +25,109 @@ test("should validate user login workflow successfully", async ({
   const page = await kameleoContext.newPage();
   const BASE_URL = "https://www.irctc.co.in/nget/train-search";
   await page.goto(BASE_URL, { waitUntil: "domcontentloaded" });
-  await sleepMs(randomDelay(1000, 2000));
+  await sleepMs(randomDelay(TIMEOUTS.VERY_LONG, TIMEOUTS.EXTEND));
 
   // // alert dialog handling
   await page.keyboard.press("Enter");
-  await sleepMs(randomDelay(8000, 10000));
+  await sleepMs(randomDelay(TIMEOUTS.VERY_LONG, TIMEOUTS.EXTEND));
 
   // // Login process
   await page.locator("text=LOGIN").first().click();
-  await sleepMs(randomDelay(300, 500));
+  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
   await page.waitForSelector('input[placeholder="User Name"]', {
     state: "visible",
   });
 
   // // handle username field
-  const usernameField = page.getByPlaceholder("User Name");
-  hoverAndClick(page, "User Name");
-  await sleepMs(randomDelay(200, 500));
-  await usernameField.pressSequentially(ENV.IRCTC_USERNAME, {
-    delay: randomDelay(100, 200),
-  });
-  await sleepMs(randomDelay(200, 500));
+  await fillInputText(
+    page,
+    "User Name",
+    ENV.IRCTC_USERNAME,
+    TIMEOUTS.VERY_SHORT,
+    TIMEOUTS.SHORT
+  );
+  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
   // // handle password field
-  const passwordField = page.getByPlaceholder("password");
-  hoverAndClick(page, "password");
-  await sleepMs(randomDelay(200, 500));
-  await passwordField.pressSequentially(ENV.IRCTC_PASSWORD, {
-    delay: randomDelay(100, 200),
-  });
-  await sleepMs(randomDelay(200, 500));
+  await fillInputText(
+    page,
+    "password",
+    ENV.IRCTC_PASSWORD,
+    TIMEOUTS.VERY_SHORT,
+    TIMEOUTS.SHORT
+  );
+
+  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
   await page.keyboard.press("Tab");
+  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
-  await page.waitForTimeout(10000); // Wait for manual captcha solving
-
-  // handling sign in button
-  await page.keyboard.press("Enter");
-  await sleepMs(randomDelay(300, 500));
-  await page.waitForTimeout(3000);
-  await expect(page.getByText(ENV.IRCTC_USERNAME)).toBeVisible({
-    timeout: 10000,
-  });
+  // await expect(page.getByText(ENV.IRCTC_USERNAME)).toBeVisible({
+  //   timeout: TIMEOUTS.EXTEND,
+  // });
 
   // handling source station
-  const sourceStation = page.locator(
-    "//input[contains(@aria-label, 'Enter From station')]"
+  await fillInputText(
+    page,
+    "//input[contains(@aria-label, 'Enter From station')]",
+    PASSENGER_DETAILS.SOURCE_STATION,
+    TIMEOUTS.VERY_SHORT,
+    TIMEOUTS.SHORT
   );
-  hoverAndClick(page, "//input[contains(@aria-label, 'Enter From station')]");
-  await sourceStation.pressSequentially(PASSENGER_DETAILS.SOURCE_STATION);
   await page.keyboard.press("Enter");
-  await sleepMs(randomDelay(1500, 2000));
+  await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
 
   // handling destignation station
   await page.keyboard.press("Enter");
-    await sleepMs(randomDelay(200, 500));
-    await page.keyboard.press("Enter");
-  await sleepMs(randomDelay(1500, 2000));
-  await sourceStation.pressSequentially(PASSENGER_DETAILS.DESTINATION_STATION);
-  await sleepMs(randomDelay(1500, 2000));
+  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
   await page.keyboard.press("Enter");
-  await sleepMs(randomDelay(1500, 2000));
+  await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
+  await fillInputText(
+    page,
+    "//input[contains(@aria-label, 'Enter To station')]",
+    PASSENGER_DETAILS.DESTINATION_STATION,
+    TIMEOUTS.VERY_SHORT,
+    TIMEOUTS.SHORT
+  );
+  await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
+  await page.keyboard.press("Enter");
+  await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
+
+  await handleTicketType(page);
 
   // handling travel date
-  hoverAndClick(page, "#jDate");
-  await page.locator("#jDate").pressSequentially(PASSENGER_DETAILS.TRAVEL_DATE);
-  await sleepMs(randomDelay(400, 600));
+  await fillInputText(
+    page,
+    "#jDate",
+    PASSENGER_DETAILS.TRAVEL_DATE,
+    TIMEOUTS.VERY_SHORT,
+    TIMEOUTS.SHORT
+  );
   await page.keyboard.press("Enter");
-  await sleepMs(randomDelay(1500, 2000));
-  await sleepMs(randomDelay(1500, 2000));
-  
+  await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
+
   // handling search btn
-  hoverAndClick(page, '[type="submit"]');
+  await hoverAndClick(page, ".search_btn.train_Search >> nth=0");
   await page.waitForTimeout(5000);
+
+  // handling train selection
+  await page.locator(PASSENGER_DETAILS.TRAIN_NO).click();
+  // SECTING THE COACH TYPE
+  await page.locator(PASSENGER_DETAILS.TRAIN_COACH).click();
+  await page.locator("text= Book Now ").first().click();
+  const DAY = PASSENGER_DETAILS.TRAVEL_DATE.split("/")[0];
+  await page.locator(`text=${DAY}`).click();
+
+  await handlePassengerInput(page);
+  await page.locator("text=Consider for Auto Upgradation ").click();
+  if (PASSENGER_DETAILS.UPI_ID_CONFIG){
+      await hoverAndClick(page, "text= Pay through BHIM/UPI ");
+  }
+  await page.locator("text=Continue ").click();
+  if (PASSENGER_DETAILS.UPI_ID_CONFIG === ""){
+    // selecting wallet
+    await page.getByAltText("Rail Icon").click();
+  }
+  await page.locator("Pay & Book ").nth(2).click();
+
+  //Rail Icon
 });

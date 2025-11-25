@@ -25,7 +25,6 @@ exports.test = base.extend({
 
     await use(context);
 
-    await browser.close();
     await client.profile.stopProfile(profile.id);
   },
 });

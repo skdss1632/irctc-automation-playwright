@@ -44,7 +44,7 @@ function uniform(min, max) {
  * @param {number} max - Maximum milliseconds (default 1500)
  * @returns {number} Random milliseconds
  */
-function randomDelay(min = 500, max = 1000) {
+function randomDelay(min, max) {
   return randint(min, max);
 }
 
