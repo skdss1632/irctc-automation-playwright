@@ -1,6 +1,6 @@
 // const { test, expect } = require("@playwright/test");
 const { test, expect } = require("../fixtures/kameleo.fixture");
-const PASSENGER_DETAILS = require("../fixtures/passenger.data.json");
+const PASSENGER_DATA = require("../fixtures/passenger.data.json");
 const ENV = require("../playwright.env.json");
 const {
   sleep,
@@ -15,6 +15,7 @@ const {
   handlePassengerInput,
   fillInputText,
   handleTicketType,
+  pickTrain,
 } = require("../helpers/utility");
 const {TIMEOUTS} = require("../enums/enums");
 
@@ -26,6 +27,10 @@ test("should validate user login workflow successfully", async ({
   const BASE_URL = "https://www.irctc.co.in/nget/train-search";
   await page.goto(BASE_URL, { waitUntil: "domcontentloaded" });
   await sleepMs(randomDelay(TIMEOUTS.VERY_LONG, TIMEOUTS.EXTEND));
+  page.once("dialog", async (dialog) => {
+    await dialog.dismiss();
+  });
+
 
   // // alert dialog handling
   await page.keyboard.press("Enter");
@@ -69,7 +74,7 @@ test("should validate user login workflow successfully", async ({
   await fillInputText(
     page,
     "//input[contains(@aria-label, 'Enter From station')]",
-    PASSENGER_DETAILS.SOURCE_STATION,
+    PASSENGER_DATA.SOURCE_STATION,
     TIMEOUTS.VERY_SHORT,
     TIMEOUTS.SHORT
   );
@@ -84,7 +89,7 @@ test("should validate user login workflow successfully", async ({
   await fillInputText(
     page,
     "//input[contains(@aria-label, 'Enter To station')]",
-    PASSENGER_DETAILS.DESTINATION_STATION,
+    PASSENGER_DATA.DESTINATION_STATION,
     TIMEOUTS.VERY_SHORT,
     TIMEOUTS.SHORT
   );
@@ -98,7 +103,7 @@ test("should validate user login workflow successfully", async ({
   await fillInputText(
     page,
     "#jDate",
-    PASSENGER_DETAILS.TRAVEL_DATE,
+    PASSENGER_DATA.TRAVEL_DATE,
     TIMEOUTS.VERY_SHORT,
     TIMEOUTS.SHORT
   );
@@ -106,24 +111,20 @@ test("should validate user login workflow successfully", async ({
   await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
 
   // handling search btn
-  await hoverAndClick(page, ".search_btn.train_Search >> nth=0");
-  await page.waitForTimeout(5000);
+  // await hoverAndClick(page, ".search_btn.train_Search >> nth=0");
 
   // handling train selection
-  await page.locator(PASSENGER_DETAILS.TRAIN_NO).click();
-  // SECTING THE COACH TYPE
-  await page.locator(PASSENGER_DETAILS.TRAIN_COACH).click();
-  await page.locator("text= Book Now ").first().click();
-  const DAY = PASSENGER_DETAILS.TRAVEL_DATE.split("/")[0];
-  await page.locator(`text=${DAY}`).click();
+  await pickTrain(page, PASSENGER_DATA.TRAIN_NO, PASSENGER_DATA.TRAIN_COACH);
+  await sleepMs(randomDelay(TIMEOUTS.VERYSHORT, TIMEOUTS.SHORT));
+ 
 
   await handlePassengerInput(page);
   await page.locator("text=Consider for Auto Upgradation ").click();
-  if (PASSENGER_DETAILS.UPI_ID_CONFIG){
+  if (PASSENGER_DATA.UPI_ID_CONFIG){
       await hoverAndClick(page, "text= Pay through BHIM/UPI ");
   }
   await page.locator("text=Continue ").click();
-  if (PASSENGER_DETAILS.UPI_ID_CONFIG === ""){
+  if (PASSENGER_DATA.UPI_ID_CONFIG === ""){
     // selecting wallet
     await page.getByAltText("Rail Icon").click();
   }
