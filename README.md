@@ -51,7 +51,7 @@
 
 ### Setup Instructions
 
-Clone the repository
+# Clone the repository
 git clone https://github.com/yourusername/irctc-automation.git
 cd irctc-automation-playwright
 
@@ -100,14 +100,14 @@ You can add more obj to add more passener details
   "__valid_genders__": "Male | Female | Transgender",
   "__valid_food_choices__": "Veg | Non Veg | No Food"
 }
-\``` 
+```
 
-### Features in Action
 
-1. *Login Automation*: Automatically enters credentials
-2. *Train Search*: Searches for trains based on source, destination, and date
-3. *Passenger Input*: Fills passenger details with anti-detection delays
-4. *Payment Flow*: Navigates through UPI/payment gateway selection --currently not having wallet payment feature
+Features in Action
+1. Login Automation: Automatically enters credentials
+2. Train Search: Searches for trains based on source, destination, and date
+3. Passenger Input: Fills passenger details with anti-detection delays
+4. Payment Flow: Navigates through UPI/payment gateway selection --currently not having wallet payment feature
 
 ---
 
