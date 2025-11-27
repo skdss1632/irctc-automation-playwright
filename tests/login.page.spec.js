@@ -9,14 +9,14 @@ const {
   uniform,
   randomDelay,
   scrollIntoView,
-} = require("../helpers/delay");
+} = require("../utility/delay");
 const {
   hoverAndClick,
   handlePassengerInput,
   fillInputText,
   handleTicketType,
   pickTrain,
-} = require("../helpers/utility");
+} = require("../utility/utility");
 const {TIMEOUTS} = require("../enums/enums");
 
 test("should validate user login workflow successfully", async ({
@@ -31,25 +31,19 @@ test("should validate user login workflow successfully", async ({
     await dialog.dismiss();
   });
 
-
   // // alert dialog handling
   await page.keyboard.press("Enter");
-  await sleepMs(randomDelay(TIMEOUTS.VERY_LONG, TIMEOUTS.EXTEND));
 
-  // // Login process
+  // Login process
   await page.locator("text=LOGIN").first().click();
   await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
-  await page.waitForSelector('input[placeholder="User Name"]', {
-    state: "visible",
-  });
 
   // // handle username field
   await fillInputText(
     page,
     "User Name",
     ENV.IRCTC_USERNAME,
-    TIMEOUTS.VERY_SHORT,
-    TIMEOUTS.SHORT
+    "placeholder"
   );
   await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
@@ -58,73 +52,67 @@ test("should validate user login workflow successfully", async ({
     page,
     "password",
     ENV.IRCTC_PASSWORD,
-    TIMEOUTS.VERY_SHORT,
-    TIMEOUTS.SHORT
+    "placeholder"
   );
-
-  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
+  // switch to captcha fld
   await page.keyboard.press("Tab");
-  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
-
-  // await expect(page.getByText(ENV.IRCTC_USERNAME)).toBeVisible({
-  //   timeout: TIMEOUTS.EXTEND,
-  // });
 
   // handling source station
   await fillInputText(
     page,
     "//input[contains(@aria-label, 'Enter From station')]",
     PASSENGER_DATA.SOURCE_STATION,
-    TIMEOUTS.VERY_SHORT,
-    TIMEOUTS.SHORT
   );
+   await sleepMs(
+     randomDelay(TIMEOUTS.MIN_TRAIN_SEARCH_WAIT, TIMEOUTS.MAX_TRAIN_SEARCH_WAIT)
+   );
   await page.keyboard.press("Enter");
-  await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
 
   // handling destignation station
-  await page.keyboard.press("Enter");
-  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
-  await page.keyboard.press("Enter");
-  await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
   await fillInputText(
     page,
     "//input[contains(@aria-label, 'Enter To station')]",
     PASSENGER_DATA.DESTINATION_STATION,
-    TIMEOUTS.VERY_SHORT,
-    TIMEOUTS.SHORT
   );
-  await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
+    await sleepMs(
+      randomDelay(
+        TIMEOUTS.MIN_TRAIN_SEARCH_WAIT,
+        TIMEOUTS.MAX_TRAIN_SEARCH_WAIT
+      )
+    );
   await page.keyboard.press("Enter");
-  await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
-
-  await handleTicketType(page);
 
   // handling travel date
   await fillInputText(
     page,
     "#jDate",
     PASSENGER_DATA.TRAVEL_DATE,
-    TIMEOUTS.VERY_SHORT,
-    TIMEOUTS.SHORT
+  );
+  await sleepMs(
+    randomDelay(TIMEOUTS.MIN_TRAIN_SEARCH_WAIT, TIMEOUTS.MAX_TRAIN_SEARCH_WAIT)
   );
   await page.keyboard.press("Enter");
-  await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
+
+  await handleTicketType(page);
+    await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
 
   // handling search btn
   // await hoverAndClick(page, ".search_btn.train_Search >> nth=0");
 
   // handling train selection
-  await pickTrain(page, PASSENGER_DATA.TRAIN_NO, PASSENGER_DATA.TRAIN_COACH);
-  await sleepMs(randomDelay(TIMEOUTS.VERYSHORT, TIMEOUTS.SHORT));
- 
+  await pickTrain(
+    page,
+    PASSENGER_DATA.TRAIN_NO,
+    PASSENGER_DATA.TRAIN_COACH,
+  );
 
-  await handlePassengerInput(page);
+  await handlePassengerInput(page, PASSENGER_DATA.PASSENGER_DETAILS);
   await page.locator("text=Consider for Auto Upgradation ").click();
-  if (PASSENGER_DATA.UPI_ID_CONFIG){
-      await hoverAndClick(page, "text= Pay through BHIM/UPI ");
+  if (PASSENGER_DATA.UPI_ID_CONFIG) {
+    await hoverAndClick(page, "text= Pay through BHIM/UPI ", "placeholder");
   }
-  await page.locator("text=Continue ").click();
-  if (PASSENGER_DATA.UPI_ID_CONFIG === ""){
+  await page.locator(".train_Search.btnDefault").click();
+  if (PASSENGER_DATA.UPI_ID_CONFIG === "") {
     // selecting wallet
     await page.getByAltText("Rail Icon").click();
   }
