@@ -52,7 +52,7 @@
 ### Setup Instructions
 
 # Clone the repository
-git clone https://github.com/yourusername/irctc-automation.git
+git clone https://github.com/skdss1632/irctc-automation-playwright.git
 cd irctc-automation-playwright
 
 Install dependencies
