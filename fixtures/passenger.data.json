@@ -4,21 +4,21 @@
   "TRAVEL_DATE": "29/11/2025",
   "SOURCE_STATION": "NDLS",
   "BOARDING_STATION": null,
-  "DESTINATION_STATION": "SPJ",
+  "DESTINATION_STATION": "BGS",
   "TATKAL": false,
   "PREMIUM_TATKAL": false,
   "UPI_ID_CONFIG": "@ybl",
   "PASSENGER_DETAILS": [
     {
-      "NAME": "Shivam Pandey",
-      "AGE": 26,
+      "NAME": "Sourav",
+      "AGE": 40,
       "GENDER": "Male",
       "SEAT": "Lower",
       "FOOD": "No Food"
     },
     {
-      "NAME": "Shivam Dubey",
-      "AGE": 26,
+      "NAME": "Sourav",
+      "AGE": 35,
       "GENDER": "Female",
       "SEAT": "Upper",
       "FOOD": "No Food"

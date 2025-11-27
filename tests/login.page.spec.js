@@ -19,7 +19,7 @@ test("should validate user login workflow successfully", async ({ page }) => {
 
   // Handle initial dialog
   await page.keyboard.press("Enter");
-  await sleepMs(randomDelay(TIMEOUTS.SHORT, TIMEOUTS.MEDIUM));
+  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
   // ✅ Login flow
   await page.locator("text=LOGIN").first().click();
@@ -59,13 +59,12 @@ test("should validate user login workflow successfully", async ({ page }) => {
   await page.keyboard.press("Enter");
 
   await handleTicketType(page);
-  await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
+  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
   // ✅ Book train
   await pickTrain(page, PASSENGER_DATA.TRAIN_NO, PASSENGER_DATA.TRAIN_COACH);
 
   await handlePassengerInput(page, PASSENGER_DATA.PASSENGER_DETAILS);
-
   await page.locator("text=Consider for Auto Upgradation").click();
 
   if (PASSENGER_DATA.UPI_ID_CONFIG) {
@@ -73,7 +72,7 @@ test("should validate user login workflow successfully", async ({ page }) => {
     // pay n book btn
     await page.locator(".train_Search.btnDefault").click();
     // radio btn selection
-    await page.locator(".btn.btn-primary.hidden-xs.ng-star-inserted").click();
+   await page.locator('input[type="radio"][value="upiMandate"]').check();
     // upi id input fld
     const widget = page.locator("#upiMandate_wrapper");
     // click the input field inside the widget
@@ -82,14 +81,14 @@ test("should validate user login workflow successfully", async ({ page }) => {
     // type the UPI ID
     await upiInput.pressSequentially(PASSENGER_DATA.UPI_ID_CONFIG);
     // click auto-debit button
-    await widget.locator("#autoDebitBtn").click();
+    await page.locator("#autoDebitBtn").click();
 
   } else{
     // for wallet selection
     await page.getByAltText("Text= (Instant Payment)").click();
     // pay n book btn
     await page.locator(".train_Search.btnDefault").click();
-    // confirm btn using wallet pay
+    // confirm btn using wallet pay -- do not uncomment the below line as of now
     // await page.locator(".mob-bot-btn.search_btn").click();
   }
 

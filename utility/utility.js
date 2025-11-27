@@ -72,7 +72,6 @@ async function handlePassengerInput(page, passengerDetails) {
       .nth(i);
     await genderDropdown.click();
     await genderDropdown.selectOption(passengerDetails[i].GENDER);
-    await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
     // Seat
     const seatDropdown = page
@@ -101,14 +100,12 @@ async function fillInputText(page, locator, inputText, selectorType) {
 }
 
 const sleepMsAndPressSeq = async (element, inputText) => {
-  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
   await element.pressSequentially(inputText, {
     delay: randomDelay(
       TIMEOUTS.MIN_PRESS_SEQ_WAIT,
       TIMEOUTS.MAX_PRESS_SEQ_WAIT
     ),
   });
-  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 };
 
 async function scrollIntoView(page, selector) {
