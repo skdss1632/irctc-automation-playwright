@@ -60,7 +60,6 @@ async function handlePassengerInput(page, passengerDetails) {
     const nameFld = await page.getByPlaceholder("Name").nth(i);
     await nameFld.click();
     await sleepMsAndPressSeq(nameFld, passengerDetails[i].NAME);
-    await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
 
     // Age
     const ageFld = await page.getByPlaceholder("Age").nth(i);
@@ -71,7 +70,7 @@ async function handlePassengerInput(page, passengerDetails) {
     const genderDropdown = page
       .locator("select[formcontrolname='passengerGender']")
       .nth(i);
-    await genderDropdown.click();  
+    await genderDropdown.click();
     await genderDropdown.selectOption(passengerDetails[i].GENDER);
     await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
@@ -79,11 +78,16 @@ async function handlePassengerInput(page, passengerDetails) {
     const seatDropdown = page
       .locator("select[formcontrolname='passengerBerthChoice']")
       .nth(i);
-    await seatDropdown.click();  
+    await seatDropdown.click();
     await seatDropdown.selectOption(passengerDetails[i].SEAT);
-    await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
-    await page.keyboard.press("Tab");
-    await page.keyboard.press("Enter");
+    if (i < passengerDetails.length-1){
+      await page.locator("text=+ Add Passenger").click();
+      await page
+        .getByPlaceholder("Name")
+        .nth(i + 1)
+        .waitFor({ state: "visible" });
+    }
+
   }
 }
 
@@ -125,23 +129,19 @@ async function pickTrain(page, trainNumber, trainCoach) {
     if (txt && txt.includes(trainNumber)) {
       const coach = await widget.locator(`text=${trainCoach}`);
       await coach.click();
-      // await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
-      // await page.waitForSelector(".loading-circle", {
-      //   state: "detached",
-      //   timeout: 4000,
-      // });
 
-      const bookingDate = await widget.locator(".link.ng-star-inserted").first();
+      const bookingDate = await widget
+        .locator(".link.ng-star-inserted")
+        .first();
       await bookingDate.click();
       await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
       const bookNowBtn = widget.locator("text=Book Now");
       await bookNowBtn.click();
       await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
+      return true; // to exit from the loop if text matched
     }
-    // return true; // means clicked on btn and do want to to keep click on btn in loop
   }
-  // return false;
 }
 
 module.exports = {

@@ -70,13 +70,27 @@ test("should validate user login workflow successfully", async ({ page }) => {
 
   if (PASSENGER_DATA.UPI_ID_CONFIG) {
     await page.locator("text=Pay through BHIM/UPI").click();
+    // pay n book btn
+    await page.locator(".train_Search.btnDefault").click();
+    // radio btn selection
+    await page.locator(".btn.btn-primary.hidden-xs.ng-star-inserted").click();
+    // upi id input fld
+    const widget = page.locator("#upiMandate_wrapper");
+    // click the input field inside the widget
+    const upiInput = widget.locator("#mndtVpa");
+    await upiInput.click();
+    // type the UPI ID
+    await upiInput.pressSequentially(PASSENGER_DATA.UPI_ID_CONFIG);
+    // click auto-debit button
+    await widget.locator("#autoDebitBtn").click();
+
+  } else{
+    // for wallet selection
+    await page.getByAltText("Text= (Instant Payment)").click();
+    // pay n book btn
+    await page.locator(".train_Search.btnDefault").click();
+    // confirm btn using wallet pay
+    // await page.locator(".mob-bot-btn.search_btn").click();
   }
 
-  await page.locator(".train_Search.btnDefault").click();
-
-  if (PASSENGER_DATA.UPI_ID_CONFIG === "") {
-    await page.getByAltText("Rail Icon").click();
-  }
-
-  await page.locator("text=Pay & Book").nth(2).click();
 });

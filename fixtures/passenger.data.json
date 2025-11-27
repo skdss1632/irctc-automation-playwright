@@ -7,20 +7,20 @@
   "DESTINATION_STATION": "SPJ",
   "TATKAL": false,
   "PREMIUM_TATKAL": false,
-  "UPI_ID_CONFIG": "",
+  "UPI_ID_CONFIG": "@ybl",
   "PASSENGER_DETAILS": [
     {
       "NAME": "Shivam Pandey",
       "AGE": 26,
       "GENDER": "Male",
-      "SEAT": "No Preference",
+      "SEAT": "Lower",
       "FOOD": "No Food"
     },
     {
       "NAME": "Shivam Dubey",
       "AGE": 26,
       "GENDER": "Female",
-      "SEAT": "No Preference",
+      "SEAT": "Upper",
       "FOOD": "No Food"
     }
   ],
