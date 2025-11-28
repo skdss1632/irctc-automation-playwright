@@ -4,7 +4,6 @@ const playwright = require("playwright");
 
 exports.test = base.extend({
   kameleoContext: async ({}, use) => {
-    console.log("🚀 Starting Kameleo profile...");
 
     const client = new KameleoLocalApiClient({
       basePath: "http://localhost:5050",
@@ -20,8 +19,6 @@ exports.test = base.extend({
       fingerprintId: fingerprints[0].id,
       name: `irctc-test-${Date.now()}`,
     });
-
-    console.log(`✓ Created profile: ${profile.id}`);
 
     const browserWSEndpoint = `ws://localhost:5050/playwright/${profile.id}`;
     const browser = await playwright.chromium.connectOverCDP(browserWSEndpoint);

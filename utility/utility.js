@@ -1,14 +1,53 @@
-const { PassThrough } = require("stream");
-const {
-  sleep,
-  sleepMs,
-  randint,
-  uniform,
-  randomDelay,
-} = require("./delay");
-const PASSENGER_DATA = require("../fixtures/passenger.data.json");
+// utility/utility.js
+// General-purpose Playwright utility functions (reusable across any project)
+
 const { TIMEOUTS } = require("../enums/enums");
 
+/**
+ * Sleep for specified seconds
+ */
+async function sleep(seconds) {
+  return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+}
+
+/**
+ * Sleep for specified milliseconds
+ */
+async function sleepMs(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Random integer between min and max (inclusive) - like Python's random.randint
+ */
+function randint(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+/**
+ * Random float between min and max - like Python's random.uniform
+ */
+function uniform(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+/**
+ * Random delay in milliseconds
+ */
+function randomDelay(min, max) {
+  return randint(min, max);
+}
+
+/**
+ * Random choice from array - like Python's random.choice
+ */
+function choice(array) {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
+/**
+ * Hover over an element and click it with human-like delays
+ */
 async function hoverAndClick(page, selector, selectorType = "auto") {
   let element;
 
@@ -31,7 +70,7 @@ async function hoverAndClick(page, selector, selectorType = "auto") {
       element = page.locator(selector).first();
   }
 
-  // Wait and interact
+  // Wait and interact with human-like behavior
   await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
   await element.hover();
   await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
@@ -39,57 +78,9 @@ async function hoverAndClick(page, selector, selectorType = "auto") {
   return element;
 }
 
-async function handleTicketType(page) {
-  if (PASSENGER_DATA.TATKAL || PASSENGER_DATA.PREMIUM_TATKAL) {
-    hoverAndClick(page, "#journeyQuota");
-    let ticketType;
-    if (PASSENGER_DATA.TATKAL) {
-      ticketType = page.locator("//li[contains(@aria-label, 'TATKAL')]");
-    } else if (PASSENGER_DATA.PREMIUM_TATKAL) {
-      ticketType = page.locator(
-        "//li[contains(@aria-label, 'PREMIUM TATKAL')]"
-      );
-    }
-    hoverAndClick(page, ticketType);
-    await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
-  }
-}
-
-async function handlePassengerInput(page, passengerDetails) {
-  for (let i = 0; i < passengerDetails.length; i++) {
-    const nameFld = await page.getByPlaceholder("Name").nth(i);
-    await nameFld.click();
-    await sleepMsAndPressSeq(nameFld, passengerDetails[i].NAME);
-
-    // Age
-    const ageFld = await page.getByPlaceholder("Age").nth(i);
-    await ageFld.click();
-    await sleepMsAndPressSeq(ageFld, passengerDetails[i].AGE.toString());
-
-    // Gender
-    const genderDropdown = page
-      .locator("select[formcontrolname='passengerGender']")
-      .nth(i);
-    await genderDropdown.click();
-    await genderDropdown.selectOption(passengerDetails[i].GENDER);
-
-    // Seat
-    const seatDropdown = page
-      .locator("select[formcontrolname='passengerBerthChoice']")
-      .nth(i);
-    await seatDropdown.click();
-    await seatDropdown.selectOption(passengerDetails[i].SEAT);
-    if (i < passengerDetails.length-1){
-      await page.locator("text=+ Add Passenger").click();
-      await page
-        .getByPlaceholder("Name")
-        .nth(i + 1)
-        .waitFor({ state: "visible" });
-    }
-
-  }
-}
-
+/**
+ * Fill input field with text after clicking and clearing
+ */
 async function fillInputText(page, locator, inputText, selectorType) {
   const element = await hoverAndClick(page, locator, selectorType);
   await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
@@ -99,7 +90,11 @@ async function fillInputText(page, locator, inputText, selectorType) {
   return element;
 }
 
+/**
+ * Type text sequentially with random human-like delays
+ */
 const sleepMsAndPressSeq = async (element, inputText) => {
+  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
   await element.pressSequentially(inputText, {
     delay: randomDelay(
       TIMEOUTS.MIN_PRESS_SEQ_WAIT,
@@ -108,44 +103,26 @@ const sleepMsAndPressSeq = async (element, inputText) => {
   });
 };
 
+/**
+ * Scroll element into view if needed
+ */
 async function scrollIntoView(page, selector) {
   const element = await page.locator(selector);
   await element.scrollIntoViewIfNeeded();
 }
 
-async function pickTrain(page, trainNumber, trainCoach) {
-  const widgets = page.locator(
-    ".form-group.no-pad.col-xs-12.bull-back.border-all"
-  );
-  const widgetCount = await widgets.count();
-
-  for (let i = 0; i < widgetCount; i++) {
-    const widget = widgets.nth(i);
-    const txt = await widget.textContent();
-
-    if (txt && txt.includes(trainNumber)) {
-      const coach = await widget.locator(`text=${trainCoach}`);
-      await coach.click();
-
-      const bookingDate = await widget
-        .locator(".link.ng-star-inserted")
-        .first();
-      await bookingDate.click();
-      await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
-
-      const bookNowBtn = widget.locator("text=Book Now");
-      await bookNowBtn.click();
-      await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
-      return true; // to exit from the loop if text matched
-    }
-  }
-}
-
 module.exports = {
+  // Time utilities
+  sleep,
+  sleepMs,
+  randint,
+  uniform,
+  randomDelay,
+  choice,
+
+  // Playwright utilities
   hoverAndClick,
-  handlePassengerInput,
   fillInputText,
-  handleTicketType,
+  sleepMsAndPressSeq,
   scrollIntoView,
-  pickTrain,
 };
