@@ -1,53 +1,38 @@
-// utility/utility.js
-// General-purpose Playwright utility functions (reusable across any project)
-
 const { TIMEOUTS } = require("../enums/enums");
+const { expect } = require("@playwright/test");
 
-/**
- * Sleep for specified seconds
- */
+
+
 async function sleep(seconds) {
   return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
 }
 
-/**
- * Sleep for specified milliseconds
- */
+
 async function sleepMs(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/**
- * Random integer between min and max (inclusive) - like Python's random.randint
- */
+
 function randint(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-/**
- * Random float between min and max - like Python's random.uniform
- */
+
 function uniform(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-/**
- * Random delay in milliseconds
- */
+
 function randomDelay(min, max) {
   return randint(min, max);
 }
 
-/**
- * Random choice from array - like Python's random.choice
- */
+
 function choice(array) {
   return array[Math.floor(Math.random() * array.length)];
 }
 
-/**
- * Hover over an element and click it with human-like delays
- */
+
 async function hoverAndClick(page, selector, selectorType = "auto") {
   let element;
 
@@ -78,9 +63,7 @@ async function hoverAndClick(page, selector, selectorType = "auto") {
   return element;
 }
 
-/**
- * Fill input field with text after clicking and clearing
- */
+
 async function fillInputText(page, locator, inputText, selectorType) {
   const element = await hoverAndClick(page, locator, selectorType);
   await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
@@ -90,9 +73,7 @@ async function fillInputText(page, locator, inputText, selectorType) {
   return element;
 }
 
-/**
- * Type text sequentially with random human-like delays
- */
+
 const sleepMsAndPressSeq = async (element, inputText) => {
   await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
   await element.pressSequentially(inputText, {
@@ -103,13 +84,47 @@ const sleepMsAndPressSeq = async (element, inputText) => {
   });
 };
 
-/**
- * Scroll element into view if needed
- */
-async function scrollIntoView(page, selector) {
-  const element = await page.locator(selector);
-  await element.scrollIntoViewIfNeeded();
+async function waitUntilTatkalBookingTime(
+  targetHour,
+  targetMinute,
+  targetSecond) {
+  while (true) {
+    const now = new Date();
+    if (
+      now.getHours() === targetHour &&
+      now.getMinutes() === targetMinute &&
+      now.getSeconds() >= targetSecond
+    ) {
+      console.log("🚀 Exact time reached!");
+      break;
+    }
+    await new Promise((r) => setTimeout(r, 500)); 
+  }
 }
+
+async function verifyElementByText({
+  page = null,
+  text,
+  widget = null,
+  timeout = TIMEOUTS.WAIT_FOR_ELEMENT,
+}) {
+  // Validation: at least one must be provided
+  if (!page && !widget) {
+    throw new Error("Either page or widget must be provided");
+  }
+
+  // Priority: widget first, then page
+  const root = page? page: widget;
+  const locator = root.locator(`text=${text}`).first();
+
+  await expect(locator).toBeVisible({ timeout });
+  await expect(locator).toBeAttached({ timeout });
+
+  return locator;
+}
+
+
+
 
 module.exports = {
   // Time utilities
@@ -119,10 +134,11 @@ module.exports = {
   uniform,
   randomDelay,
   choice,
+  waitUntilTatkalBookingTime,
 
   // Playwright utilities
   hoverAndClick,
   fillInputText,
   sleepMsAndPressSeq,
-  scrollIntoView,
+  verifyElementByText,
 };

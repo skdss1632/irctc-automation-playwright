@@ -4,6 +4,7 @@ const {
   hoverAndClick,
   fillInputText,
   sleepMsAndPressSeq,
+  verifyElementByText,
 } = require("../utility/utility");
 const { TIMEOUTS } = require("../enums/enums");
 const PASSENGER_DATA = require("../fixtures/passenger.data.json");
@@ -27,16 +28,16 @@ function validatePassengerData(passengerData) {
   }
 }
 
-
 async function performLogin(page) {
   await page.locator("text=LOGIN").first().click();
-  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
+  await verifyElementByText({page:page, text:"SIGN IN"});
 
   await fillInputText(page, "User Name", ENV.IRCTC_USERNAME, "placeholder");
   await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
   await fillInputText(page, "password", ENV.IRCTC_PASSWORD, "placeholder");
   await page.keyboard.press("Tab");
+  console.log("login success");
 }
 
 async function searchTrain(page, passengerData) {
@@ -60,14 +61,15 @@ async function searchTrain(page, passengerData) {
   );
   await page.keyboard.press("Enter");
 
+  await handleTicketType(page);
+  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
+
   await fillInputText(page, "#jDate", passengerData.TRAVEL_DATE);
   await sleepMs(
     randomDelay(TIMEOUTS.MIN_TRAIN_SEARCH_WAIT, TIMEOUTS.MAX_TRAIN_SEARCH_WAIT)
   );
   await page.keyboard.press("Enter");
-
-  await handleTicketType(page);
-  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
+  console.log("searched train successfully");
 }
 
 async function handleTicketType(page) {
@@ -75,46 +77,106 @@ async function handleTicketType(page) {
     await hoverAndClick(page, "#journeyQuota");
     let ticketType;
     if (PASSENGER_DATA.TATKAL) {
-      ticketType = page.locator("//li[contains(@aria-label, 'TATKAL')]");
+      ticketType = "//li[contains(@aria-label, 'TATKAL')]";
     } else if (PASSENGER_DATA.PREMIUM_TATKAL) {
-      ticketType = page.locator(
-        "//li[contains(@aria-label, 'PREMIUM TATKAL')]"
-      );
+      ticketType = "//li[contains(@aria-label, 'PREMIUM TATKAL')]";
     }
     await hoverAndClick(page, ticketType);
     await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
   }
 }
 
-
 async function pickTrain(page, trainNumber, trainCoach) {
-  const widgets = page.locator(
+  const trainWidgets = page.locator(
     ".form-group.no-pad.col-xs-12.bull-back.border-all"
   );
-  const widgetCount = await widgets.count();
+  const count = await trainWidgets.count();
 
-  for (let i = 0; i < widgetCount; i++) {
-    const widget = widgets.nth(i);
-    const txt = await widget.textContent();
+  for (let i = 0; i < count; i++) {
+    const widget = trainWidgets.nth(i);
+    const content = await widget.textContent();
 
-    if (txt && txt.includes(trainNumber)) {
-      const coach = await widget.locator(`text=${trainCoach}`);
-      await coach.click();
+    if (!content || !content.includes(trainNumber)) continue;
 
-      const bookingDate = await widget
-        .locator(".link.ng-star-inserted")
-        .first();
-      await bookingDate.click();
-      await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
+    // Coach type container
+    const coachTypeWidget = widget.locator(
+      ".white-back.col-xs-12.ng-star-inserted"
+    );
 
-      const bookNowBtn = widget.locator("text=Book Now");
-      await bookNowBtn.click();
-      await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
-      return true;
-    }
+    // Try seat selection
+    const coachSelected = await selectSeatType(trainCoach, coachTypeWidget);
+    if (!coachSelected) continue;
+
+    // Booking date widget
+    const bookingDateWidget = widget.locator(".col-xs-12.ng-star-inserted");
+
+    await clickWithRetry(bookingDateWidget, trainCoach);
+
+    await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
+
+    await widget.locator("text=Book Now").click();
+    console.log("clicked on book now btn");
+
+    return true;
   }
 }
 
+
+async function clickWithRetry(bookingDateWidget, trainCoachSelector) {
+  const label =
+    PASSENGER_DATA.TATKAL || PASSENGER_DATA.PREMIUM_TATKAL ? "AVAILABLE" : "WL";
+
+  await verifyElementByText({text:label, widget:bookingDateWidget, timeout:10000});
+
+  const bookingDate = bookingDateWidget.locator(".link.ng-star-inserted").first();
+
+  try {
+    await bookingDate.click();
+  } catch {
+    console.log("unable to click on booking data trying to click again.....")
+    const coachLocator = bookingDateWidget.locator(
+      `text=${trainCoachSelector}`
+    );
+    const coachText = await coachLocator.textContent();
+
+    if (coachText && coachText.includes(trainCoachSelector)) {
+      await coachLocator.click();
+    }
+
+    // re-verify before retry
+    await verifyElementByText({text:label, widget:bookingDateWidget, timeout:10000});
+
+    await bookingDate.click();
+  }
+}
+
+// traindetails widgets
+// find texts in every widget i.e train number
+
+// if found then get coachtypewidget
+
+// now find pre-avl(buttons) class in coachtype widget
+
+// found pre-avl with text match i.e sl click
+
+async function selectSeatType(trainCoach, coachTypeWidget) {
+  const seatElements = await coachTypeWidget.locator(".pre-avl").all();
+  for (const element of seatElements) {
+    const text = await element.textContent();
+    const cleanText = text.split("Refresh")[0].trim();
+
+    console.log("Found seat type:", cleanText);
+
+    // Check if text matches user preference (case insensitive)
+    if (cleanText.toLowerCase().includes(trainCoach.toLowerCase())) {
+      console.log(`Matched! Clicking on: ${cleanText}`);
+      await element.click();
+      return true; // Found and clicked
+    }
+  }
+  console.log(`No seat type found matching: ${trainCoach}`);
+  return false; // Not found
+}
 
 async function handlePassengerInput(page, passengerDetails) {
   for (let i = 0; i < passengerDetails.length; i++) {
@@ -151,12 +213,17 @@ async function handlePassengerInput(page, passengerDetails) {
         .waitFor({ state: "visible" });
     }
   }
+  console.log("passenger details filled successfully");
+  await page.locator("text=Consider for Auto Upgradation").click();
+  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
+  const continueBtn = await page.locator("text=Continue").first();
+  await continueBtn.click();
 }
-
 
 async function handleUPIPayment(page, upiId) {
   // pay and book btn
   await page.locator(".btn.btn-primary.hidden-xs.ng-star-inserted").click();
+  await verifyElementByText({page:page, text:"Mandate Based Payment Instruments"});
   // radio btn selection
   await page.locator('input[type="radio"][value="upiMandate"]').check();
   // upi id input fld
@@ -164,15 +231,18 @@ async function handleUPIPayment(page, upiId) {
   const upiInput = widget.locator("#mndtVpa");
   await upiInput.click();
   await upiInput.pressSequentially(upiId);
+  console.log("filled upi id");
   // pay btn
   await page.locator("#autoDebitBtn").click();
 }
 
-
 async function handleWalletPayment(page) {
   // wallet selection
   await page.getByAltText("Text= (Instant Payment)").click();
-   // confirm btn using wallet pay -- do not uncomment the below line as of now
+  // pay n book btn
+  await page.locator(".btn.btn-primary.hidden-xs.ng-star-inserted").click();
+  await verifyElementByText({page:page, text:"Confirm"});
+  // confirm btn using wallet pay -- do not uncomment the below line as of now
   // await page.locator(".train_Search.btnDefault").click();
 }
 
