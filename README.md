@@ -27,39 +27,35 @@
 ✅ **Anti-Bot Detection** - Uses Playwright Stealth to bypass IRCTC's advanced bot detection  
 ✅ **Human-like Behavior** - Random delays and natural mouse movements  
 ✅ **Dynamic Element Handling** - Robust selectors with auto-wait mechanisms  
-✅ **CAPTCHA Support** - Manual CAPTCHA solving in headed mode  
-✅ **Multi-Passenger Support** - Handles multiple passengers with dynamic form addition  
+✅ **CAPTCHA Support** - Manual CAPTCHA solving in headed mode(will implement auto captcha solving)
+✅ **Multi-Passenger Support**  - Handles multiple passengers with dynamic form addition  
 
 ---
 
-## 🛠️ Tech Stack
+# Note
 
-| Technology | Purpose |
-|------------|---------|
-| **Playwright** | Browser automation framework |
-| **Puppeteer Stealth Plugin** | Anti-detection & fingerprint masking |
-| **JavaScript/Node.js** | Core scripting language |
-
+- ✅ must start script before 2 or 3 minutes before the tatkal time(2 minutes recommended)
+- ✅ fill captcha manually and press enter asap
 ---
 
-## ⚙️ Installation
+## ⚙️ Setup Process
 
 ### Prerequisites
 - Node.js 16.x or higher
 - npm or yarn package manager
-- Windows
+- Windows(tested on windows only)
 
 ### Setup Instructions
+1. open command prompt
+2. git clone https://github.com/skdss1632/irctc-automation-playwright.git
+3. cd irctc-automation-playwright
+4. npm install
+5. install kameleo browser(browser must be open before running the automation script)
+6. automation script run command
+   npx playwright test
 
-# Clone the repository
-git clone https://github.com/skdss1632/irctc-automation-playwright.git
-cd irctc-automation-playwright
 
-Install dependencies
-npm install
-
-Add your credentials in config.js
-playwright.env.json
+# Add your irctc credentials in irctc.config.js
 
 
 ### Configuration
@@ -107,7 +103,7 @@ Features in Action
 1. Login Automation: Automatically enters credentials
 2. Train Search: Searches for trains based on source, destination, and date
 3. Passenger Input: Fills passenger details with anti-detection delays
-4. Payment Flow: Navigates through UPI/payment gateway selection --currently not having wallet payment feature
+4. Payment Flow: Navigates through UPI/payment gateway selection
 
 ---
 
@@ -139,7 +135,7 @@ User Input → Login → Search Train → Select Class → Fill Passengers → P
 
 ---
 
-## 🎯 Project Highlights for Recruiters
+## 🎯 Project Highlights
 
 - ✅ *Full-Stack Automation*: End-to-end automation of complex multi-step forms
 - ✅ *Anti-Detection Expertise*: Advanced stealth techniques to bypass security measures
