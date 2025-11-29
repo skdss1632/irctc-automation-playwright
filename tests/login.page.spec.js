@@ -1,4 +1,5 @@
-const { test, expect } = require("../fixtures/kameleo.fixture");
+// const { test, expect } = require("../fixtures/kameleo.fixture");
+const { test, expect } = require("@playwright/test");
 const PASSENGER_DATA = require("../fixtures/passenger.data.json");
 const {
   sleepMs,
@@ -63,8 +64,8 @@ test("automated ticket booking", async ({ page }) => {
   await handlePassengerInput(page, PASSENGER_DATA.PASSENGER_DETAILS);
 
   // review journey
-  await verifyElementByText(page, "View Cancellation Policy");
-  if (env.AUTO_CAPTCHA) {
+  await verifyElementByText({ page: page, text: "View Cancellation Policy" });
+  if (ENV.AUTO_CAPTCHA) {
     const captchaText = await solveCaptcha(page, "Captcha Image here");
     fillInputText(page, "Enter Captcha", captchaText, "placeholder");
     await page.keyboard.press("Tab");

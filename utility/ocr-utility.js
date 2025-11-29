@@ -63,11 +63,7 @@ async function solveCaptcha(
       console.log(`\n🔄 CAPTCHA OCR Attempt ${attempt}/${MAX_ATTEMPTS}`);
       console.log("🔍 Looking for CAPTCHA image...");
 
-      await page.getByAltText(captchaSelector).waitFor({
-        state: "visible",
-        timeout: 10000,
-      });
-
+      await page.getByAltText(captchaSelector);
       console.log("📸 Capturing CAPTCHA screenshot...");
 
       const captchaElement = page.getByAltText(captchaSelector);
@@ -103,8 +99,6 @@ async function solveCaptcha(
     }
   }
 }
-
-
 
 /**
  * Check if OCR server is running

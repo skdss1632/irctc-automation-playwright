@@ -2,37 +2,29 @@ const { TIMEOUTS } = require("../enums/enums");
 const { expect } = require("@playwright/test");
 const PASSENGER_DATA = require("../fixtures/passenger.data.json");
 
-
-
 async function sleep(seconds) {
   return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
 }
-
 
 async function sleepMs(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-
 function randint(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
 
 function uniform(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-
 function randomDelay(min, max) {
   return randint(min, max);
 }
 
-
 function choice(array) {
   return array[Math.floor(Math.random() * array.length)];
 }
-
 
 async function hoverAndClick(page, selector, selectorType = "auto") {
   let element;
@@ -73,7 +65,6 @@ async function fillInputText(page, locator, inputText, selectorType) {
   return element;
 }
 
-
 const sleepMsAndPressSeq = async (element, inputText) => {
   await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
   await element.pressSequentially(inputText, {
@@ -91,11 +82,11 @@ async function waitUntilTatkalBookingTime() {
   if (PASSENGER_DATA.TRAIN_COACH === "SL") {
     targetHour = 10;
     targetMinute = 0;
-    targetSecond = 1;
+    targetSecond = 2;
   } else {
     targetHour = 11;
     targetMinute = 0;
-    targetSecond = 1;
+    targetSecond = 2;
   }
 
   while (true) {
@@ -114,7 +105,6 @@ async function waitUntilTatkalBookingTime() {
   }
 }
 
-
 async function verifyElementByText({
   page = null,
   text,
@@ -127,7 +117,7 @@ async function verifyElementByText({
   }
 
   // Priority: widget first, then page
-  const root = page? page: widget;
+  const root = page ? page : widget;
   const locator = root.locator(`text=${text}`).first();
 
   await expect(locator).toBeVisible({ timeout });
@@ -135,9 +125,6 @@ async function verifyElementByText({
 
   return locator;
 }
-
-
-
 
 module.exports = {
   // Time utilities

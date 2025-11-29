@@ -24,7 +24,7 @@ async function performLogin(page, captchaSelector) {
 
   await fillInputText(page, "password", ENV.IRCTC_PASSWORD, "placeholder");
   await page.keyboard.press("Tab");
-  if(ENV.AUTO_CAPTCHA){
+  if (ENV.AUTO_CAPTCHA) {
     // Solve CAPTCHA
     const captchaText = await solveCaptcha(page, captchaSelector);
     console.log(`📝 Extracted CAPTCHA: ${captchaText}`);
