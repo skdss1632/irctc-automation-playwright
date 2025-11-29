@@ -8,7 +8,7 @@ const {
 } = require("../utility/utility");
 const { TIMEOUTS } = require("../enums/enums");
 const PASSENGER_DATA = require("../fixtures/passenger.data.json");
-const ENV = require("../playwright.env.json");
+const ENV = require("../irctc.env.json");
 
 
 async function performLogin(page) {
