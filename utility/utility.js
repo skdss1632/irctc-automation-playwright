@@ -84,12 +84,23 @@ const sleepMsAndPressSeq = async (element, inputText) => {
   });
 };
 
-async function waitUntilTatkalBookingTime(
-  targetHour,
-  targetMinute,
-  targetSecond) {
+async function waitUntilTatkalBookingTime() {
+  // Internal business rules
+  let targetHour, targetMinute, targetSecond;
+
+  if (PASSENGER_DATA.TRAIN_COACH === "SL") {
+    targetHour = 10;
+    targetMinute = 0;
+    targetSecond = 1;
+  } else {
+    targetHour = 11;
+    targetMinute = 0;
+    targetSecond = 1;
+  }
+
   while (true) {
     const now = new Date();
+
     if (
       now.getHours() === targetHour &&
       now.getMinutes() === targetMinute &&
@@ -98,9 +109,11 @@ async function waitUntilTatkalBookingTime(
       console.log("🚀 Exact time reached!");
       break;
     }
-    await new Promise((r) => setTimeout(r, 500)); 
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
   }
 }
+
 
 async function verifyElementByText({
   page = null,

@@ -30,14 +30,14 @@ test("automated ticket booking", async ({ page }) => {
   // Handle initial dialog
   await page.keyboard.press("Enter");
 
+
   // Login
   await verifyElementByText({page:page, text:"IRCTC EXCLUSIVE"});
   await performLogin(page);
 
   // Search train
   await searchTrain(page, PASSENGER_DATA);
-
-  // waitUntilTatkalBookingTime(10, 56, 0);
+  // waitUntilTatkalBookingTime();
 
   // pick train
   //  await verifyElementByText(page, "View Cancellation Policy"); // captcha page so no need to verify this now
