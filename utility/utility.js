@@ -1,5 +1,6 @@
 const { TIMEOUTS } = require("../enums/enums");
 const { expect } = require("@playwright/test");
+const PASSENGER_DATA = require("../fixtures/passenger.data.json");
 
 
 
@@ -62,7 +63,6 @@ async function hoverAndClick(page, selector, selectorType = "auto") {
   await element.click();
   return element;
 }
-
 
 async function fillInputText(page, locator, inputText, selectorType) {
   const element = await hoverAndClick(page, locator, selectorType);
