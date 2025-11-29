@@ -37,15 +37,15 @@ test("automated ticket booking", async ({ page }) => {
 
   // Search train
   await searchTrain(page, PASSENGER_DATA);
-  // waitUntilTatkalBookingTime();
+  waitUntilTatkalBookingTime();
 
   // pick train
   //  await verifyElementByText(page, "View Cancellation Policy"); // captcha page so no need to verify this now
   await verifyElementByText({page:page, text:"Show Available Trains"});
   await pickTrain(page, PASSENGER_DATA.TRAIN_NO, PASSENGER_DATA.TRAIN_COACH);
 
-  // Fill passenger details
-  await verifyElementByText({page:page, text:"+ Add Passenger"});
+  // Fill passenger details -- timeout is 5 min bcz if user login before the tatkal time i.e 3 or 5 min before..
+  await verifyElementByText({page:page, text:"+ Add Passenger", timeout:300000});
   await handlePassengerInput(page, PASSENGER_DATA.PASSENGER_DETAILS);
 
   // Handle payment
