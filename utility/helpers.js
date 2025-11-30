@@ -5,12 +5,12 @@ const {
   fillInputText,
   sleepMsAndPressSeq,
   verifyElementByText,
-} = require("../utility/utility");
+} = require("./utility");
 const { TIMEOUTS } = require("../enums/enums");
-const { solveCaptcha, checkOCRServer } = require("../utility/ocr-utility");
-const PASSENGER_DATA = require("../fixtures/passenger.data.json");
-const ENV = require("../irctc.env.json");
+const { solveCaptcha, checkOCRServer } = require("./ocr-utility");
+const { getPassengerData } = require("../utility/fetchPassengerData");
 
+const GET_PASSENGER_DATA = await getPassengerData();
 async function performLogin(page, captchaSelector) {
   const ocrServerRunning = await checkOCRServer();
   if (!ocrServerRunning) {
@@ -46,11 +46,11 @@ async function performLogin(page, captchaSelector) {
   console.log("✅ Login successful");
 }
 
-async function searchTrain(page, passengerData) {
+async function searchTrain(page, GET_PASSENGER_DATA) {
   await fillInputText(
     page,
     "//input[contains(@aria-label, 'Enter From station')]",
-    passengerData.SOURCE_STATION
+    GET_PASSENGER_DATA.SOURCE_STATION
   );
   await sleepMs(
     randomDelay(TIMEOUTS.MIN_TRAIN_SEARCH_WAIT, TIMEOUTS.MAX_TRAIN_SEARCH_WAIT)
@@ -60,7 +60,7 @@ async function searchTrain(page, passengerData) {
   await fillInputText(
     page,
     "//input[contains(@aria-label, 'Enter To station')]",
-    passengerData.DESTINATION_STATION
+    GET_PASSENGER_DATA.DESTINATION_STATION
   );
   await sleepMs(
     randomDelay(TIMEOUTS.MIN_TRAIN_SEARCH_WAIT, TIMEOUTS.MAX_TRAIN_SEARCH_WAIT)
@@ -70,7 +70,7 @@ async function searchTrain(page, passengerData) {
   await handleTicketType(page);
   await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
-  await fillInputText(page, "#jDate", passengerData.TRAVEL_DATE);
+  await fillInputText(page, "#jDate", GET_PASSENGER_DATA.TRAVEL_DATE);
   await sleepMs(
     randomDelay(TIMEOUTS.MIN_TRAIN_SEARCH_WAIT, TIMEOUTS.MAX_TRAIN_SEARCH_WAIT)
   );
@@ -82,12 +82,12 @@ async function searchTrain(page, passengerData) {
 }
 
 async function handleTicketType(page) {
-  if (PASSENGER_DATA.TATKAL || PASSENGER_DATA.PREMIUM_TATKAL) {
+  if (GET_PASSENGER_DATA.TATKAL || GET_PASSENGER_DATA.PREMIUM_TATKAL) {
     await hoverAndClick(page, "#journeyQuota");
     let ticketType;
-    if (PASSENGER_DATA.TATKAL) {
+    if (GET_PASSENGER_DATA.TATKAL) {
       ticketType = "//li[contains(@aria-label, 'TATKAL')]";
-    } else if (PASSENGER_DATA.PREMIUM_TATKAL) {
+    } else if (GET_PASSENGER_DATA.PREMIUM_TATKAL) {
       ticketType = "//li[contains(@aria-label, 'PREMIUM TATKAL')]";
     }
     await hoverAndClick(page, ticketType);
@@ -133,7 +133,7 @@ async function pickTrain(page, trainNumber, trainCoach) {
 
 async function clickWithRetry(bookingDateWidget, trainCoachSelector) {
   const label =
-    PASSENGER_DATA.TATKAL || PASSENGER_DATA.PREMIUM_TATKAL ? "AVAILABLE" : "WL";
+    GET_PASSENGER_DATA.TATKAL || GET_PASSENGER_DATA.PREMIUM_TATKAL ? "AVAILABLE" : "WL";
 
   await verifyElementByText({
     text: label,
@@ -273,33 +273,33 @@ async function handleWalletPayment(page) {
   // await page.locator(".train_Search.btnDefault").click();
 }
 
-function validatePassengerData(passengerData) {
+function validatePassengerData(GET_PASSENGER_DATA) {
   // Train details
-  if (!passengerData.TRAIN_NO || passengerData.TRAIN_NO.trim() === "") {
+  if (!GET_PASSENGER_DATA.TRAIN_NO || GET_PASSENGER_DATA.TRAIN_NO.trim() === "") {
     throw new Error("TRAIN_NO is required and cannot be empty");
   }
 
-  if (!passengerData.TRAIN_COACH || passengerData.TRAIN_COACH.trim() === "") {
+  if (!GET_PASSENGER_DATA.TRAIN_COACH || GET_PASSENGER_DATA.TRAIN_COACH.trim() === "") {
     throw new Error("TRAIN_COACH is required and cannot be empty");
   }
 
   // Stations
   if (
-    !passengerData.SOURCE_STATION ||
-    passengerData.SOURCE_STATION.trim() === ""
+    !GET_PASSENGER_DATA.SOURCE_STATION ||
+    GET_PASSENGER_DATA.SOURCE_STATION.trim() === ""
   ) {
     throw new Error("SOURCE_STATION is required and cannot be empty");
   }
 
   if (
-    !passengerData.DESTINATION_STATION ||
-    passengerData.DESTINATION_STATION.trim() === ""
+    !GET_PASSENGER_DATA.DESTINATION_STATION ||
+    GET_PASSENGER_DATA.DESTINATION_STATION.trim() === ""
   ) {
     throw new Error("DESTINATION_STATION is required and cannot be empty");
   }
 
   // Travel date
-  if (!passengerData.TRAVEL_DATE || passengerData.TRAVEL_DATE.trim() === "") {
+  if (!GET_PASSENGER_DATA.TRAVEL_DATE || GET_PASSENGER_DATA.TRAVEL_DATE.trim() === "") {
     throw new Error("TRAVEL_DATE is required and cannot be empty");
   }
 
@@ -307,20 +307,20 @@ function validatePassengerData(passengerData) {
 
   // Validate date format (DD/MM/YYYY)
   const datePattern = /^\d{2}\/\d{2}\/\d{4}$/;
-  if (!datePattern.test(passengerData.TRAVEL_DATE)) {
+  if (!datePattern.test(GET_PASSENGER_DATA.TRAVEL_DATE)) {
     throw new Error(
       "TRAVEL_DATE must be in DD/MM/YYYY format (e.g., 30/11/2025)"
     );
   }
 
   // Validate date is valid and not in past
-  const [day, month, year] = passengerData.TRAVEL_DATE.split("/").map(Number);
+  const [day, month, year] = GET_PASSENGER_DATA.TRAVEL_DATE.split("/").map(Number);
   const travelDate = new Date(year, month - 1, day);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   if (isNaN(travelDate.getTime())) {
-    throw new Error(`Invalid TRAVEL_DATE: ${passengerData.TRAVEL_DATE}`);
+    throw new Error(`Invalid TRAVEL_DATE: ${GET_PASSENGER_DATA.TRAVEL_DATE}`);
   }
 
   if (travelDate < today) {
@@ -330,39 +330,39 @@ function validatePassengerData(passengerData) {
   // ========== Coach Validation ==========
 
   const validCoaches = ["SL", "2A", "3A", "3E", "1A", "CC", "EC", "2S"];
-  if (!validCoaches.includes(passengerData.TRAIN_COACH.toUpperCase())) {
+  if (!validCoaches.includes(GET_PASSENGER_DATA.TRAIN_COACH.toUpperCase())) {
     throw new Error(
       `Invalid TRAIN_COACH: "${
-        passengerData.TRAIN_COACH
+        GET_PASSENGER_DATA.TRAIN_COACH
       }". Valid options: ${validCoaches.join(", ")}`
     );
   }
 
   // ========== Tatkal Validation ==========
 
-  if (typeof passengerData.TATKAL !== "boolean") {
+  if (typeof GET_PASSENGER_DATA.TATKAL !== "boolean") {
     throw new Error("TATKAL must be a boolean (true/false)");
   }
 
-  if (typeof passengerData.PREMIUM_TATKAL !== "boolean") {
+  if (typeof GET_PASSENGER_DATA.PREMIUM_TATKAL !== "boolean") {
     throw new Error("PREMIUM_TATKAL must be a boolean (true/false)");
   }
 
   // Cannot select both Tatkal and Premium Tatkal
-  if (passengerData.TATKAL && passengerData.PREMIUM_TATKAL) {
+  if (GET_PASSENGER_DATA.TATKAL && GET_PASSENGER_DATA.PREMIUM_TATKAL) {
     throw new Error(
       "Cannot select both TATKAL and PREMIUM_TATKAL. Choose only one."
     );
   }
 
   // Premium Tatkal only for AC classes
-  if (passengerData.PREMIUM_TATKAL) {
+  if (GET_PASSENGER_DATA.PREMIUM_TATKAL) {
     const acClasses = ["1A", "2A", "3A", "3E", "CC", "EC"];
-    if (!acClasses.includes(passengerData.TRAIN_COACH.toUpperCase())) {
+    if (!acClasses.includes(GET_PASSENGER_DATA.TRAIN_COACH.toUpperCase())) {
       throw new Error(
         `PREMIUM_TATKAL is only available for AC classes (${acClasses.join(
           ", "
-        )}). Selected: ${passengerData.TRAIN_COACH}`
+        )}). Selected: ${GET_PASSENGER_DATA.TRAIN_COACH}`
       );
     }
   }
@@ -370,17 +370,17 @@ function validatePassengerData(passengerData) {
   // ========== Passenger Details Validation ==========
 
   if (
-    !passengerData.PASSENGER_DETAILS ||
-    !Array.isArray(passengerData.PASSENGER_DETAILS)
+    !GET_PASSENGER_DATA.PASSENGER_DETAILS ||
+    !Array.isArray(GET_PASSENGER_DATA.PASSENGER_DETAILS)
   ) {
     throw new Error("PASSENGER_DETAILS must be an array");
   }
 
-  if (passengerData.PASSENGER_DETAILS.length === 0) {
+  if (GET_PASSENGER_DATA.PASSENGER_DETAILS.length === 0) {
     throw new Error("At least one passenger is required in PASSENGER_DETAILS");
   }
 
-  if (passengerData.PASSENGER_DETAILS.length > 6) {
+  if (GET_PASSENGER_DATA.PASSENGER_DETAILS.length > 6) {
     throw new Error("Maximum 6 passengers allowed per booking");
   }
 
@@ -398,7 +398,7 @@ function validatePassengerData(passengerData) {
   const validFoodChoices = ["Veg", "Non Veg", "No Food"];
 
   // Validate each passenger
-  passengerData.PASSENGER_DETAILS.forEach((passenger, index) => {
+  GET_PASSENGER_DATA.PASSENGER_DETAILS.forEach((passenger, index) => {
     const passengerNum = index + 1;
 
     // Name
@@ -484,11 +484,11 @@ function validatePassengerData(passengerData) {
   // ========== Boarding Station Validation ==========
 
   if (
-    passengerData.BOARDING_STATION &&
-    passengerData.BOARDING_STATION.trim() !== ""
+    GET_PASSENGER_DATA.BOARDING_STATION &&
+    GET_PASSENGER_DATA.BOARDING_STATION.trim() !== ""
   ) {
     // Boarding station should not be the same as source
-    if (passengerData.BOARDING_STATION === passengerData.SOURCE_STATION) {
+    if (GET_PASSENGER_DATA.BOARDING_STATION === GET_PASSENGER_DATA.SOURCE_STATION) {
       console.warn(
         "BOARDING_STATION is same as SOURCE_STATION. This is redundant."
       );
@@ -497,7 +497,7 @@ function validatePassengerData(passengerData) {
 
   // ========== Station Code Validation ==========
 
-  if (passengerData.SOURCE_STATION === passengerData.DESTINATION_STATION) {
+  if (GET_PASSENGER_DATA.SOURCE_STATION === GET_PASSENGER_DATA.DESTINATION_STATION) {
     throw new Error(
       "SOURCE_STATION and DESTINATION_STATION cannot be the same"
     );

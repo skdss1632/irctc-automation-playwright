@@ -1,7 +1,7 @@
 // tests/login.page.spec.js
 
 const { test, expect } = require("@playwright/test");
-const PASSENGER_DATA = require("../fixtures/passenger.data.json");
+const { getPassengerData } = require("../utility/fetchPassengerData");
 const ENV = require("../irctc.env.json");
 const {
   sleepMs,
@@ -24,10 +24,11 @@ const {
   handlePassengerInput,
   handleUPIPayment,
   handleWalletPayment,
-} = require("../helpers/helpers");
+} = require("../utility/helpers");
 
 test.beforeAll(async () => {
-  validatePassengerData(PASSENGER_DATA);
+  const GET_PASSENGER_DATA = await getPassengerData();
+  validatePassengerData(GET_PASSENGER_DATA);
 
   // Check if OCR server is running before tests
   const isRunning = await checkOCRServer();
@@ -80,7 +81,7 @@ test("automated ticket booking", async ({ page, context }) => {
 
   // Search train
   await sleepMs(randomDelay(TIMEOUTS.SHORT, TIMEOUTS.MEDIUM));
-  await searchTrain(page, PASSENGER_DATA);
+  await searchTrain(page, GET_PASSENGER_DATA);
   await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
 
   // Optional: Wait for Tatkal time
@@ -91,7 +92,7 @@ test("automated ticket booking", async ({ page, context }) => {
   await verifyElementByText({ page: page, text: "Show Available Trains" });
   await sleepMs(randomDelay(TIMEOUTS.SHORT, TIMEOUTS.MEDIUM));
 
-  await pickTrain(page, PASSENGER_DATA.TRAIN_NO, PASSENGER_DATA.TRAIN_COACH);
+  await pickTrain(page, GET_PASSENGER_DATA.TRAIN_NO, GET_PASSENGER_DATA.TRAIN_COACH);
   await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
 
   // Fill passenger details
@@ -103,7 +104,7 @@ test("automated ticket booking", async ({ page, context }) => {
   });
   await sleepMs(randomDelay(TIMEOUTS.SHORT, TIMEOUTS.MEDIUM));
 
-  await handlePassengerInput(page, PASSENGER_DATA.PASSENGER_DETAILS);
+  await handlePassengerInput(page, GET_PASSENGER_DATA.PASSENGER_DETAILS);
   await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
 
   // Review journey
@@ -132,8 +133,8 @@ test("automated ticket booking", async ({ page, context }) => {
   await verifyElementByText({ page: page, text: "Safe & Secure Payments" });
   await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
-  if (PASSENGER_DATA.UPI_ID_CONFIG) {
-    await handleUPIPayment(page, PASSENGER_DATA.UPI_ID_CONFIG);
+  if (GET_PASSENGER_DATA.UPI_ID_CONFIG) {
+    await handleUPIPayment(page, GET_PASSENGER_DATA.UPI_ID_CONFIG);
   } else {
     await handleWalletPayment(page);
   }

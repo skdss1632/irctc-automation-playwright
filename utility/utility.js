@@ -1,6 +1,6 @@
 const { TIMEOUTS } = require("../enums/enums");
 const { expect } = require("@playwright/test");
-const PASSENGER_DATA = require("../fixtures/passenger.data.json");
+const { GET_PASSENGER_DATA } = require("../utility/fetchPassengerData");
 
 async function sleep(seconds) {
   return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
@@ -102,7 +102,7 @@ async function waitUntilTatkalBookingTime() {
   // Internal business rules
   let targetHour, targetMinute, targetSecond;
 
-  if (PASSENGER_DATA.TRAIN_COACH === "SL") {
+  if (GET_PASSENGER_DATA.TRAIN_COACH === "SL") {
     targetHour = 10;
     targetMinute = 0;
     targetSecond = 2;
