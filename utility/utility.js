@@ -2,8 +2,6 @@ import { TIMEOUTS } from "../enums/enums.js";
 import { expect } from "@playwright/test";
 import { getPassengerData } from "../utility/fetchPassengerData.js";
 
-const FETCHED_PASSENGER_DATA = await getPassengerData();
-
 async function sleep(seconds) {
   return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
 }
@@ -100,11 +98,11 @@ const sleepMsAndPressSeq = async (element, inputText) => {
   });
 };
 
-async function waitUntilTatkalBookingTime() {
+async function waitUntilTatkalBookingTime(FETCHED_PASSENGER_DATA) {
   // Internal business rules
   let targetHour, targetMinute, targetSecond;
 
-  if (GET_PASSENGER_DATA.TRAIN_COACH === "SL") {
+  if (FETCHED_PASSENGER_DATA.TRAIN_COACH === "SL") {
     targetHour = 10;
     targetMinute = 0;
     targetSecond = 2;
@@ -151,8 +149,7 @@ async function verifyElementByText({
   return locator;
 }
 
-module.exports = {
-  // Time utilities
+export {
   sleep,
   sleepMs,
   randint,

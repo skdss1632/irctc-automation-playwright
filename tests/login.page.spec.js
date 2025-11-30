@@ -29,7 +29,7 @@ test.beforeAll(async () => {
   validatePassengerData(FETCHED_PASSENGER_DATA);
 
   // Check if OCR server is running before tests
-  const isRunning = await checkOCRServer();
+  const isRunning = await checkOCRServer({ page });
   if (!isRunning) {
     console.warn("\n⚠️  WARNING: OCR server is not running!");
     console.warn(
@@ -38,7 +38,7 @@ test.beforeAll(async () => {
   }
 });
 
-test("automated ticket booking", async ({ page, context }) => {
+test("login web page", async ({ page, context }) => {
   const BASE_URL = "https://www.irctc.co.in/nget/train-search";
 
   // ✅ Fixed: Try to load existing session first
@@ -60,42 +60,43 @@ test("automated ticket booking", async ({ page, context }) => {
 
     await page.goto(BASE_URL, { waitUntil: "domcontentloaded" });
     await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
-
-    // Handle initial dialog
-    await page.keyboard.press("Enter");
-    await sleepMs(randomDelay(TIMEOUTS.SHORT, TIMEOUTS.MEDIUM));
-
-    // Login
-    await verifyElementByText({ page: page, text: "IRCTC EXCLUSIVE" });
-    await sleepMs(randomDelay(TIMEOUTS.SHORT, TIMEOUTS.MEDIUM));
-
-    await performLogin(page, "Captcha Image here");
-    await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
-
-    // ✅ Save session after successful login
-    await saveSession(context);
-    console.log("✅ Session saved for future use");
   }
+});
 
-  // Search train
-  await sleepMs(randomDelay(TIMEOUTS.SHORT, TIMEOUTS.MEDIUM));
-  await searchTrain(page, GET_PASSENGER_DATA);
+test("automated ticket booking", async ({ page, context }) => {
+  const FETCHED_PASSENGER_DATA = await getPassengerData();
+  // Handle initial dialog
+  await page.keyboard.press("Enter");
+  await sleepMs(randomDelay(TIMEOUTS.SHORT, TIMEOUTS.SHORT));
+
+  // Login
+  await verifyElementByText({ page: page, text: "IRCTC EXCLUSIVE" });
+  await sleepMs(randomDelay(TIMEOUTS.SHORT, TIMEOUTS.SHORT));
+
+  await performLogin(page, "Captcha Image here");
   await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
 
+  // ✅ Save session after successful login
+  await saveSession(context);
+  console.log("✅ Session saved for future use");
+  // Search train
+  await searchTrain(page, FETCHED_PASSENGER_DATA);
+  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
+
   // Optional: Wait for Tatkal time
-  // await waitUntilTatkalBookingTime(10, 0, 0);
+  // await waitUntilTatkalBookingTime(FETCHED_PASSENGER_DATA);
 
   // Pick train
   console.log("🚂 Picking train...");
   await verifyElementByText({ page: page, text: "Show Available Trains" });
-  await sleepMs(randomDelay(TIMEOUTS.SHORT, TIMEOUTS.MEDIUM));
+  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
   await pickTrain(
     page,
-    GET_PASSENGER_DATA.TRAIN_NO,
-    GET_PASSENGER_DATA.TRAIN_COACH
+    FETCHED_PASSENGER_DATA.TRAIN_NO,
+    FETCHED_PASSENGER_DATA.TRAIN_COACH
   );
-  await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
+  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
   // Fill passenger details
   console.log("👥 Filling passenger details...");
@@ -104,20 +105,20 @@ test("automated ticket booking", async ({ page, context }) => {
     text: "+ Add Passenger",
     timeout: 300000,
   });
-  await sleepMs(randomDelay(TIMEOUTS.SHORT, TIMEOUTS.MEDIUM));
+  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
-  await handlePassengerInput(page, GET_PASSENGER_DATA.PASSENGER_DETAILS);
-  await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
+  await handlePassengerInput(page, FETCHED_PASSENGER_DATA.PASSENGER_DETAILS);
+  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
   // Review journey
   console.log("📋 Reviewing journey...");
   await verifyElementByText({ page: page, text: "View Cancellation Policy" });
-  await sleepMs(randomDelay(TIMEOUTS.SHORT, TIMEOUTS.MEDIUM));
+  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
   if (ENV.AUTO_CAPTCHA) {
     console.log("🤖 Solving CAPTCHA...");
     const captchaText = await solveCaptcha(page, "Captcha Image here");
-    await sleepMs(randomDelay(TIMEOUTS.SHORT, TIMEOUTS.MEDIUM));
+    await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.MEDIUM));
 
     await fillInputText(page, "Enter Captcha", captchaText, "placeholder");
     await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
@@ -135,12 +136,12 @@ test("automated ticket booking", async ({ page, context }) => {
   await verifyElementByText({ page: page, text: "Safe & Secure Payments" });
   await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
-  if (GET_PASSENGER_DATA.UPI_ID_CONFIG) {
-    await handleUPIPayment(page, GET_PASSENGER_DATA.UPI_ID_CONFIG);
+  if (FETCHED_PASSENGER_DATA.UPI_ID_CONFIG) {
+    await handleUPIPayment(page, FETCHED_PASSENGER_DATA.UPI_ID_CONFIG);
   } else {
     await handleWalletPayment(page);
   }
 
-  await sleepMs(randomDelay(TIMEOUTS.SHORT, TIMEOUTS.VERY_LONG));
+  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.VERY_LONG));
   console.log("🎉 Ticket booked successfully!");
 });

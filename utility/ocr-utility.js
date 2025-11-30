@@ -123,8 +123,4 @@ async function checkOCRServer(serverUrl = "http://localhost:5000") {
   }
 }
 
-module.exports = {
-  extractTextFromImage,
-  solveCaptcha,
-  checkOCRServer,
-};
+export { extractTextFromImage, solveCaptcha, checkOCRServer };

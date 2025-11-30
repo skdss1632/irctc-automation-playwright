@@ -43,4 +43,4 @@ async function loadSession(context) {
   return true;
 }
 
-module.exports = { saveSession, loadSession };
+export { loadSession, saveSession };
