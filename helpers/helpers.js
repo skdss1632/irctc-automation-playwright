@@ -16,6 +16,7 @@ async function performLogin(page, captchaSelector) {
   if (!ocrServerRunning) {
     console.warn("⚠️ OCR server not running. CAPTCHA must be solved manually.");
   }
+  await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
   await page.locator("text=LOGIN").first().click();
   await verifyElementByText({ page: page, text: "SIGN IN" });
 
@@ -23,6 +24,7 @@ async function performLogin(page, captchaSelector) {
   await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
   await fillInputText(page, "password", ENV.IRCTC_PASSWORD, "placeholder");
+  await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
   await page.keyboard.press("Tab");
   if (ENV.AUTO_CAPTCHA) {
     // Solve CAPTCHA
@@ -34,8 +36,12 @@ async function performLogin(page, captchaSelector) {
 
     // Click Sign In / Submit button
     await page.keyboard.press("Tab");
+    await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
     await page.keyboard.press("Tab");
+    await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
     await page.keyboard.press("Enter");
+    // await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
+    await verifyElementByText({ page: page, text: ENV.IRCTC_USERNAME});
   }
   console.log("✅ Login successful");
 }

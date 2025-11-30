@@ -26,6 +26,29 @@ function choice(array) {
   return array[Math.floor(Math.random() * array.length)];
 }
 
+/**
+ * Move mouse randomly to simulate human behavior
+ */
+async function randomMouseMovement(page) {
+  const viewport = page.viewportSize();
+  const x = Math.floor(Math.random() * viewport.width);
+  const y = Math.floor(Math.random() * viewport.height);
+  
+  await page.mouse.move(x, y, { steps: 10 });
+  await new Promise(resolve => setTimeout(resolve, randomDelay(100, 300)));
+}
+
+/**
+ * Scroll page randomly
+ */
+async function randomScroll(page) {
+  const scrollAmount = Math.floor(Math.random() * 300) + 100;
+  await page.evaluate((amount) => {
+    window.scrollBy(0, amount);
+  }, scrollAmount);
+  await new Promise(resolve => setTimeout(resolve, randomDelay(500, 1000)));
+}
+
 async function hoverAndClick(page, selector, selectorType = "auto") {
   let element;
 
