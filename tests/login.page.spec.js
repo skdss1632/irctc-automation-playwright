@@ -1,22 +1,20 @@
 // tests/login.page.spec.js
+import { test, expect } from "@playwright/test";
+import { getPassengerData } from "../utility/fetchPassengerData";
 
-const { test, expect } = require("@playwright/test");
-const { getPassengerData } = require("../utility/fetchPassengerData");
-const ENV = require("../irctc.env.json");
-const {
+import {
   sleepMs,
   randomDelay,
   waitUntilTatkalBookingTime,
   verifyElementByText,
   hoverAndClick,
   fillInputText,
-} = require("../utility/utility");
-const { checkOCRServer, solveCaptcha } = require("../utility/ocr-utility");
-const { TIMEOUTS } = require("../enums/enums");
-const { saveSession, loadSession } = require("../utility/session-utility");
+} from "../utility/utility.js";
+import { checkOCRServer, solveCaptcha } from "../utility/ocr-utility.js";
+import { TIMEOUTS } from "../enums/enums";
+import { saveSession, loadSession } from "../utility/session-utility.js";
 
-// Import IRCTC-specific helpers
-const {
+import {
   validatePassengerData,
   performLogin,
   searchTrain,
@@ -24,11 +22,11 @@ const {
   handlePassengerInput,
   handleUPIPayment,
   handleWalletPayment,
-} = require("../utility/helpers");
+} from "../utility/helpers.js";
 
 test.beforeAll(async () => {
-  const GET_PASSENGER_DATA = await getPassengerData();
-  validatePassengerData(GET_PASSENGER_DATA);
+  const FETCHED_PASSENGER_DATA = await getPassengerData();
+  validatePassengerData(FETCHED_PASSENGER_DATA);
 
   // Check if OCR server is running before tests
   const isRunning = await checkOCRServer();
@@ -92,7 +90,11 @@ test("automated ticket booking", async ({ page, context }) => {
   await verifyElementByText({ page: page, text: "Show Available Trains" });
   await sleepMs(randomDelay(TIMEOUTS.SHORT, TIMEOUTS.MEDIUM));
 
-  await pickTrain(page, GET_PASSENGER_DATA.TRAIN_NO, GET_PASSENGER_DATA.TRAIN_COACH);
+  await pickTrain(
+    page,
+    GET_PASSENGER_DATA.TRAIN_NO,
+    GET_PASSENGER_DATA.TRAIN_COACH
+  );
   await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
 
   // Fill passenger details

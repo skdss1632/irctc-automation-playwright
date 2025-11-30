@@ -1,6 +1,8 @@
-const { TIMEOUTS } = require("../enums/enums");
-const { expect } = require("@playwright/test");
-const { GET_PASSENGER_DATA } = require("../utility/fetchPassengerData");
+import { TIMEOUTS } from "../enums/enums.js";
+import { expect } from "@playwright/test";
+import { getPassengerData } from "../utility/fetchPassengerData.js";
+
+const FETCHED_PASSENGER_DATA = await getPassengerData();
 
 async function sleep(seconds) {
   return new Promise((resolve) => setTimeout(resolve, seconds * 1000));

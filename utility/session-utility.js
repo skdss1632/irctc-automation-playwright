@@ -1,6 +1,10 @@
-// utility/session.js
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// ESM replacement for __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const SESSION_FILE = path.join(__dirname, "../session-storage.json");
 

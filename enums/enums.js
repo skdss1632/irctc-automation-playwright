@@ -11,4 +11,4 @@ const TIMEOUTS = Object.freeze({
   WAIT_FOR_ELEMENT: 60000,
 });
 
-module.exports = { TIMEOUTS };
+export { TIMEOUTS };

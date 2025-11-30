@@ -1,14 +1,14 @@
-const {
+import {
   sleepMs,
   randomDelay,
   hoverAndClick,
   fillInputText,
   sleepMsAndPressSeq,
   verifyElementByText,
-} = require("./utility");
-const { TIMEOUTS } = require("../enums/enums");
-const { solveCaptcha, checkOCRServer } = require("./ocr-utility");
-const { getPassengerData } = require("../utility/fetchPassengerData");
+} from "./utility.js";
+import { TIMEOUTS } from "../enums/enums.js";
+import { solveCaptcha, checkOCRServer } from "./ocr-utility.js";
+import { getPassengerData } from "../utility/fetchPassengerData";
 
 const GET_PASSENGER_DATA = await getPassengerData();
 async function performLogin(page, captchaSelector) {
@@ -41,7 +41,7 @@ async function performLogin(page, captchaSelector) {
     await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
     await page.keyboard.press("Enter");
     // await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
-    await verifyElementByText({ page: page, text: ENV.IRCTC_USERNAME});
+    await verifyElementByText({ page: page, text: ENV.IRCTC_USERNAME });
   }
   console.log("✅ Login successful");
 }
@@ -133,7 +133,9 @@ async function pickTrain(page, trainNumber, trainCoach) {
 
 async function clickWithRetry(bookingDateWidget, trainCoachSelector) {
   const label =
-    GET_PASSENGER_DATA.TATKAL || GET_PASSENGER_DATA.PREMIUM_TATKAL ? "AVAILABLE" : "WL";
+    GET_PASSENGER_DATA.TATKAL || GET_PASSENGER_DATA.PREMIUM_TATKAL
+      ? "AVAILABLE"
+      : "WL";
 
   await verifyElementByText({
     text: label,
@@ -275,11 +277,17 @@ async function handleWalletPayment(page) {
 
 function validatePassengerData(GET_PASSENGER_DATA) {
   // Train details
-  if (!GET_PASSENGER_DATA.TRAIN_NO || GET_PASSENGER_DATA.TRAIN_NO.trim() === "") {
+  if (
+    !GET_PASSENGER_DATA.TRAIN_NO ||
+    GET_PASSENGER_DATA.TRAIN_NO.trim() === ""
+  ) {
     throw new Error("TRAIN_NO is required and cannot be empty");
   }
 
-  if (!GET_PASSENGER_DATA.TRAIN_COACH || GET_PASSENGER_DATA.TRAIN_COACH.trim() === "") {
+  if (
+    !GET_PASSENGER_DATA.TRAIN_COACH ||
+    GET_PASSENGER_DATA.TRAIN_COACH.trim() === ""
+  ) {
     throw new Error("TRAIN_COACH is required and cannot be empty");
   }
 
@@ -299,7 +307,10 @@ function validatePassengerData(GET_PASSENGER_DATA) {
   }
 
   // Travel date
-  if (!GET_PASSENGER_DATA.TRAVEL_DATE || GET_PASSENGER_DATA.TRAVEL_DATE.trim() === "") {
+  if (
+    !GET_PASSENGER_DATA.TRAVEL_DATE ||
+    GET_PASSENGER_DATA.TRAVEL_DATE.trim() === ""
+  ) {
     throw new Error("TRAVEL_DATE is required and cannot be empty");
   }
 
@@ -314,7 +325,8 @@ function validatePassengerData(GET_PASSENGER_DATA) {
   }
 
   // Validate date is valid and not in past
-  const [day, month, year] = GET_PASSENGER_DATA.TRAVEL_DATE.split("/").map(Number);
+  const [day, month, year] =
+    GET_PASSENGER_DATA.TRAVEL_DATE.split("/").map(Number);
   const travelDate = new Date(year, month - 1, day);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -488,7 +500,9 @@ function validatePassengerData(GET_PASSENGER_DATA) {
     GET_PASSENGER_DATA.BOARDING_STATION.trim() !== ""
   ) {
     // Boarding station should not be the same as source
-    if (GET_PASSENGER_DATA.BOARDING_STATION === GET_PASSENGER_DATA.SOURCE_STATION) {
+    if (
+      GET_PASSENGER_DATA.BOARDING_STATION === GET_PASSENGER_DATA.SOURCE_STATION
+    ) {
       console.warn(
         "BOARDING_STATION is same as SOURCE_STATION. This is redundant."
       );
@@ -497,7 +511,9 @@ function validatePassengerData(GET_PASSENGER_DATA) {
 
   // ========== Station Code Validation ==========
 
-  if (GET_PASSENGER_DATA.SOURCE_STATION === GET_PASSENGER_DATA.DESTINATION_STATION) {
+  if (
+    GET_PASSENGER_DATA.SOURCE_STATION === GET_PASSENGER_DATA.DESTINATION_STATION
+  ) {
     throw new Error(
       "SOURCE_STATION and DESTINATION_STATION cannot be the same"
     );

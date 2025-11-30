@@ -1,6 +1,6 @@
-const { test: base } = require("@playwright/test");
-const { KameleoLocalApiClient } = require("@kameleo/local-api-client");
-const playwright = require("playwright");
+import { test as base } from "@playwright/test";
+import { KameleoLocalApiClient } from "@kameleo/local-api-client";
+import playwright from "playwright";
 
 exports.test = base.extend({
   kameleoContext: async ({}, use) => {

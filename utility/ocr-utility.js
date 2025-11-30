@@ -1,7 +1,7 @@
 // utility/ocr.utility.js
 
-const { sleepMs, randomDelay } = require("./utility");
-const { TIMEOUTS } = require("../enums/enums");
+import { TIMEOUTS } from "../enums/enums";
+import { sleepMs, randomDelay } from "./utility";
 
 /**
  * Send image to OCR server and get extracted text using fetch
