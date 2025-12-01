@@ -1,38 +1,67 @@
-import { test as base } from "@playwright/test";
+import { test as base, expect } from "@playwright/test";
 import { KameleoLocalApiClient } from "@kameleo/local-api-client";
 import playwright from "playwright";
 
-exports.test = base.extend({
-  kameleoContext: async ({}, use) => {
+// ✅ Define a persistent profile name
+const PROFILE_NAME = "gb2";
 
+export const test = base.extend({
+  kameleoContext: async ({}, use) => {
     const client = new KameleoLocalApiClient({
       basePath: "http://localhost:5050",
     });
 
-    const fingerprints = await client.fingerprint.searchFingerprints(
-      "desktop",
-      undefined,
-      "chrome"
-    );
+    let profile;
 
-    const profile = await client.profile.createProfile({
-      fingerprintId: fingerprints[0].id,
-      name: `irctc-test-${Date.now()}`,
-    });
+    // ✅ Check if profile already exists
+    const profiles = await client.profile.listProfiles();
+    const existingProfile = profiles.find((p) => p.name === PROFILE_NAME);
+
+    if (existingProfile) {
+      console.log(`✓ Reusing existing profile: ${PROFILE_NAME}`);
+      profile = existingProfile;
+
+      // Start the profile if it's not already running
+      try {
+        await client.profile.startProfile(profile.id);
+      } catch (error) {
+        // Profile might already be running
+        console.log("Profile already running or starting...");
+      }
+    } else {
+      // ✅ Create new profile only if it doesn't exist
+      console.log(`✓ Creating new profile: ${PROFILE_NAME}`);
+      const fingerprints = await client.fingerprint.searchFingerprints(
+        "desktop",
+        undefined,
+        "chrome"
+      );
+
+      profile = await client.profile.createProfile({
+        fingerprintId: fingerprints[0].id,
+        name: PROFILE_NAME,
+        // Optional: Add more persistent settings
+        canvas: "noise",
+        webgl: "noise",
+      });
+    }
 
     const browserWSEndpoint = `ws://localhost:5050/playwright/${profile.id}`;
     const browser = await playwright.chromium.connectOverCDP(browserWSEndpoint);
     const context = browser.contexts()[0];
 
-      await context.grantPermissions([], {
-        origin: "https://www.irctc.co.in",
-      });
+    await context.grantPermissions([], {
+      origin: "https://www.irctc.co.in",
+    });
 
     await use(context);
-    await client.profile.stopProfile(profile.id);
+
+    // ✅ DON'T stop the profile - keep it running for next time
+    // await client.profile.stopProfile(profile.id);
+    console.log("✓ Profile kept alive for next run");
   },
 
-  //Auto-maximized page fixture
+  // Auto-maximized page fixture
   page: async ({ kameleoContext }, use) => {
     const page = await kameleoContext.newPage();
 
@@ -53,4 +82,4 @@ exports.test = base.extend({
   },
 });
 
-exports.expect = require("@playwright/test").expect;
+export { expect };

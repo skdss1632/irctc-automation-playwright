@@ -149,6 +149,15 @@ async function verifyElementByText({
   return locator;
 }
 
+function convertDateFormat(dateString) {
+  // Split the date string by '-'
+  const [year, month, day] = dateString.split("-");
+
+  // Return in DD/MM/YYYY format
+  return `${day}/${month}/${year}`;
+}
+
+
 export {
   sleep,
   sleepMs,
@@ -157,6 +166,7 @@ export {
   randomDelay,
   choice,
   waitUntilTatkalBookingTime,
+  convertDateFormat,
 
   // Playwright utilities
   hoverAndClick,

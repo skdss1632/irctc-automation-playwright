@@ -1,5 +1,5 @@
 const TIMEOUTS = Object.freeze({
-  VERY_SHORT: 400,
+  VERY_SHORT: 350,
   SHORT: 500,
   MEDIUM: 1500,
   LONG: 2000,

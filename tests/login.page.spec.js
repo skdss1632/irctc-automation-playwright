@@ -1,5 +1,6 @@
 // tests/login.page.spec.js
-import { test, expect } from "@playwright/test";
+// import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures/kameleo.fixture.js";
 import { getPassengerData } from "../utility/fetchPassengerData";
 
 import {
@@ -9,10 +10,11 @@ import {
   verifyElementByText,
   hoverAndClick,
   fillInputText,
+  convertDateFormat,
 } from "../utility/utility.js";
 import { checkOCRServer, solveCaptcha } from "../utility/ocr-utility.js";
 import { TIMEOUTS } from "../enums/enums";
-import { saveSession, loadSession } from "../utility/session-utility.js";
+// import { saveSession, loadSession } from "../utility/session-utility.js";
 
 import {
   validatePassengerData,
@@ -29,7 +31,7 @@ test.beforeAll(async () => {
   validatePassengerData(FETCHED_PASSENGER_DATA);
 
   // Check if OCR server is running before tests
-  const isRunning = await checkOCRServer({ page });
+  const isRunning = await checkOCRServer();
   if (!isRunning) {
     console.warn("\n⚠️  WARNING: OCR server is not running!");
     console.warn(
@@ -38,32 +40,15 @@ test.beforeAll(async () => {
   }
 });
 
-test("login web page", async ({ page, context }) => {
-  const BASE_URL = "https://www.irctc.co.in/nget/train-search";
+test("automated ticket booking", async ({ page, context }) => {
+   const BASE_URL = "https://www.irctc.co.in/nget/train-search";
 
   // ✅ Fixed: Try to load existing session first
-  const sessionLoaded = await loadSession(context);
-
-  if (sessionLoaded) {
-    console.log("✅ Using existing session - skipping login");
-
-    // Go to page with existing session
+  // const sessionLoaded = await loadSession(context);
     await page.goto(BASE_URL, { waitUntil: "domcontentloaded" });
     await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
+  
 
-    // Skip login if session is valid
-  } else {
-    console.log("ℹ️ No valid session - performing fresh login");
-
-    // ✅ Clear cookies only if no session was loaded
-    await context.clearCookies();
-
-    await page.goto(BASE_URL, { waitUntil: "domcontentloaded" });
-    await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
-  }
-});
-
-test("automated ticket booking", async ({ page, context }) => {
   const FETCHED_PASSENGER_DATA = await getPassengerData();
   // Handle initial dialog
   await page.keyboard.press("Enter");
@@ -77,8 +62,6 @@ test("automated ticket booking", async ({ page, context }) => {
   await sleepMs(randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
 
   // ✅ Save session after successful login
-  await saveSession(context);
-  console.log("✅ Session saved for future use");
   // Search train
   await searchTrain(page, FETCHED_PASSENGER_DATA);
   await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
@@ -115,7 +98,7 @@ test("automated ticket booking", async ({ page, context }) => {
   await verifyElementByText({ page: page, text: "View Cancellation Policy" });
   await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
-  if (ENV.AUTO_CAPTCHA) {
+  if (FETCHED_PASSENGER_DATA.AUTOCAPTCHA) {
     console.log("🤖 Solving CAPTCHA...");
     const captchaText = await solveCaptcha(page, "Captcha Image here");
     await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.MEDIUM));
@@ -144,4 +127,6 @@ test("automated ticket booking", async ({ page, context }) => {
 
   await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.VERY_LONG));
   console.log("🎉 Ticket booked successfully!");
+      // ✅ Clear cookies only if no session was loaded
+    await context.clearCookies();
 });

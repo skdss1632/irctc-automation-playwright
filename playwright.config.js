@@ -39,25 +39,25 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: "webkit",
+      name: "Microsoft Edge",
       use: {
         ...devices["Desktop Edge"],
         viewport: { width: 1536, height: 742 },
         // userAgent:
         //   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
-        // launchOptions: {
-        //   args: [
-        //     "--disable-blink-features=AutomationControlled",
-        //     "--disable-features=IsolateOrigins,site-per-process",
-        //     "--no-sandbox",
-        //     "--disable-setuid-sandbox",
-        //     "--disable-dev-shm-usage",
-        //     "--disable-accelerated-2d-canvas",
-        //     "--no-first-run",
-        //     "--no-zygote",
-        //     // "--disable-gpu",
-        //   ],
-        // },
+        launchOptions: {
+          args: [
+            "--disable-blink-features=AutomationControlled",
+            "--disable-features=IsolateOrigins,site-per-process",
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-dev-shm-usage",
+            "--disable-accelerated-2d-canvas",
+            "--no-first-run",
+            "--no-zygote",
+            // "--disable-gpu",
+          ],
+        },
       },
     },
 

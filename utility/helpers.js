@@ -5,6 +5,7 @@ import {
   fillInputText,
   sleepMsAndPressSeq,
   verifyElementByText,
+  convertDateFormat,
 } from "./utility.js";
 import { TIMEOUTS } from "../enums/enums.js";
 import { solveCaptcha, checkOCRServer } from "./ocr-utility.js";
@@ -20,7 +21,7 @@ async function performLogin(page, captchaSelector) {
   await page.locator("text=LOGIN").first().click();
   await verifyElementByText({ page: page, text: "SIGN IN" });
 
-  await fillInputText(page, "User Name", FETCHED_PASSENGER_DATA.PASSWORD, "placeholder");
+  await fillInputText(page, "User Name", FETCHED_PASSENGER_DATA.USERNAME, "placeholder");
   await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
   await fillInputText(page, "password", FETCHED_PASSENGER_DATA.PASSWORD, "placeholder");
@@ -73,7 +74,9 @@ async function searchTrain(page, FETCHED_PASSENGER_DATA) {
   await handleTicketType(page);
   await sleepMs(randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
-  await fillInputText(page, "#jDate", FETCHED_PASSENGER_DATA.TRAVEL_DATE);
+  const newDateFormat = convertDateFormat(FETCHED_PASSENGER_DATA.TRAVEL_DATE);
+
+  await fillInputText(page, "#jDate", newDateFormat);
   await sleepMs(
     randomDelay(TIMEOUTS.MIN_TRAIN_SEARCH_WAIT, TIMEOUTS.MAX_TRAIN_SEARCH_WAIT)
   );
@@ -317,26 +320,11 @@ function validatePassengerData(FETCHED_PASSENGER_DATA) {
     throw new Error("TRAVEL_DATE is required and cannot be empty");
   }
 
-  // Raw value from UI: "2025-12-01"
-  const rawDate = FETCHED_PASSENGER_DATA.TRAVEL_DATE.trim();
-
-  // Convert "2025-12-01" -> ["2025","12","01"]
-  const parts = rawDate.split("-");
-  if (parts.length !== 3) {
-    throw new Error(
-      "TRAVEL_DATE must be in YYYY-MM-DD format from UI (e.g., 2025-12-01)"
-    );
-  }
-
-  const [yearStr, monthStr, dayStr] = parts;
-  const normalizedDate = `${dayStr.padStart(2, "0")}/${monthStr.padStart(
-    2,
-    "0"
-  )}/${yearStr}`; // "01/12/2025"
+  const newDateFormat = convertDateFormat(FETCHED_PASSENGER_DATA.TRAVEL_DATE);
 
   // ===== Date format validation (DD/MM/YYYY) =====
   const datePattern = /^\d{2}\/\d{2}\/\d{4}$/;
-  if (!datePattern.test(normalizedDate)) {
+  if (!datePattern.test(newDateFormat)) {
     throw new Error(
       "TRAVEL_DATE must be in DD/MM/YYYY format (e.g., 30/11/2025)"
     );
@@ -435,10 +423,6 @@ function validatePassengerData(FETCHED_PASSENGER_DATA) {
     // Age
     if (!passenger.AGE && passenger.AGE !== 0) {
       throw new Error(`Passenger ${passengerNum}: AGE is required`);
-    }
-
-    if (typeof passenger.AGE !== "number") {
-      throw new Error(`Passenger ${passengerNum}: AGE must be a number`);
     }
 
     if (passenger.AGE < 1 || passenger.AGE > 120) {
