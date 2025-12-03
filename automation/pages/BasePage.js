@@ -1,7 +1,7 @@
 // pages/BasePage.js
 import { expect } from "@playwright/test";
 import { TIMEOUTS, CAPTCHA_RETRY, VALIDATE_LOCATOR_TIMEOUT } from "../enums/enums.js";
-import {solveCaptcha,checkOCRServer} from "../utility/ocr-utility"
+import {solveCaptcha} from "../utility/ocr-utility"
 
 export class BasePage {
   constructor(page) {
@@ -90,11 +90,6 @@ export class BasePage {
     await expect(locator).toBeVisible({ timeout });
     await expect(locator).toBeAttached({ timeout });
     return locator;
-  }
-  async autoCaptchaDisabled(autoCaptcha) {
-    if (!autoCaptcha) {
-      console.log("⚠️ Auto-captcha disabled. Solve manually.");
-    }
   }
 
    async submitLogin() {

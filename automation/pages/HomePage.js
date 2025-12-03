@@ -1,6 +1,5 @@
 import { BasePage } from "./BasePage.js";
 import { TIMEOUTS, VALIDATE_LOCATOR_TIMEOUT } from "../enums/enums.js";
-import { convertDateFormat } from "../utility/utility"
 
 export class HomePage extends BasePage {
   constructor(page) {

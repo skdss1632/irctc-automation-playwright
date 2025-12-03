@@ -4,7 +4,7 @@ import { KameleoLocalApiClient } from "@kameleo/local-api-client";
 import playwright from "playwright";
 
 const KAMELEO_TIMEOUT = 120000; // 2 minutes
-const PROFILE_NAME_PREFIX = "fb65";
+const PROFILE_NAME_PREFIX = "gm44";
 
 export const test = base.extend({
   kameleoContext: async ({}, use) => {

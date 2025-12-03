@@ -1,4 +1,9 @@
-async function extractTextFromImage(
+// utility/ocr-utility.js
+
+/**
+ * Extract text from base64 image using OCR server
+ */
+export async function extractTextFromImage(
   base64ImageScreenshot,
   ocrServerUrl = "http://localhost:5000/extract-text"
 ) {
@@ -32,25 +37,35 @@ async function extractTextFromImage(
   }
 }
 
-async function solveCaptcha(
+/**
+ * Solve captcha using OCR
+ */
+export async function solveCaptcha(
   page,
   captchaSelector,
   ocrServerUrl = "http://localhost:5000/extract-text"
 ) {
-  try {    
-    // Wait for captcha to load
+  try {
+    console.log(`🔍 Looking for captcha: "${captchaSelector}"`);
+    
     const captchaElement = page.getByAltText(captchaSelector);
     await captchaElement.waitFor({ state: 'visible', timeout: 10000 });
 
+    console.log('📸 Taking captcha screenshot...');
     const screenshotBuffer = await captchaElement.screenshot();
     const base64Image = screenshotBuffer.toString("base64");
 
-    // Add data URI prefix
     const fullBase64 = `data:image/png;base64,${base64Image}`;
 
-    // Extract text
+    console.log('🔤 Sending to OCR server...');
     const captchaText = await extractTextFromImage(fullBase64, ocrServerUrl);
-    return captchaText;
+
+    if (!captchaText || captchaText.trim() === "") {
+      throw new Error("OCR returned empty text");
+    }
+
+    console.log(`✅ OCR result: "${captchaText}"`);
+    return captchaText.trim();
 
   } catch (error) {
     console.error(`❌ Failed to solve captcha:`, error.message);
@@ -58,8 +73,10 @@ async function solveCaptcha(
   }
 }
 
-
-async function checkOCRServer(serverUrl = "http://localhost:5000") {
+/**
+ * Check if OCR server is running
+ */
+export async function checkOCRServer(serverUrl = "http://localhost:5000") {
   try {
     console.log('🔍 Checking OCR server...');
     
@@ -90,5 +107,3 @@ async function checkOCRServer(serverUrl = "http://localhost:5000") {
     return false;
   }
 }
-
-export { extractTextFromImage, solveCaptcha, checkOCRServer };

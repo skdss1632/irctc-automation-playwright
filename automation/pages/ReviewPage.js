@@ -22,7 +22,7 @@ export class ReviewPage extends BasePage {
     await this.inputCaptchaWithRetry({
       captchaSelector: this.captchaLocatorReview,
       autoCaptcha: passengerData.AUTO_CAPTCHA,
-      invalidCaptchalocator: this.invalidCaptchalocatorReview,textLocator: safePaymentText,
+      invalidCaptchalocator: this.invalidCaptchalocatorReview,textLocator: this.safePaymentText,
     });
   }
 

@@ -32,7 +32,6 @@ export class LoginPage extends BasePage {
 
   async enterPassword(password) {
     await this.fillInputText(this.passwordInput, password, "placeholder");
-    // await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
     await this.page.keyboard.press("Tab");
   }
 

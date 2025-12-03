@@ -1,9 +1,8 @@
 import { test } from "../fixtures/kameleo.fixture.js";
-import { sleepMs, randomDelay,waitUntilTatkalBookingTime } from "../utility/utility.js";
+import { sleepMs, randomDelay,waitUntilTatkalBookingTime,validatePassengerData } from "../utility.js";
 import { TIMEOUTS } from "../enums/enums.js";
-import { validatePassengerData } from "../utility/validators.js";
 import PASSENGER_DATA from "../fixtures/passenger.data.json" assert {type:"json"};
-import ENV from "../irctc.env.json" assert{type:"json"};
+import ENV from "../irctc.env" assert{type:"json"};
 
 // Page Objects
 import { LoginPage } from "../pages/LoginPage.js";
