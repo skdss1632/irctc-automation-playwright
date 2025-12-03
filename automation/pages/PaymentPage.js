@@ -32,7 +32,7 @@ export class PaymentPage extends BasePage {
     } else {
       await this.confirmWalletPayment(confirmWallet);
     }
-    await this.sleepMs(this.randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
+    await this.sleepMs(this.randomDelay(TIMEOUTS.LONG, TIMEOUTS.VERY_LONG));
   }
 
   async verifyPaymentPage(upiId) {

@@ -8,7 +8,7 @@ export class TrainSelectionPage extends BasePage {
     // widgets
     this.trainWidgetsSelector =
       ".form-group.no-pad.col-xs-12.bull-back.border-all";
-    this.coachTypeWidgetSelector = ".white-back.col-xs-12.ng-star-inserted";
+    this.coachTypeWidgetLocator = ".white-back.col-xs-12.ng-star-inserted";
     this.bookingDateWidgetSelector = ".col-xs-12.ng-star-inserted";
 
     //locators
@@ -78,7 +78,7 @@ export class TrainSelectionPage extends BasePage {
 
       if (!content || !content.includes(trainNumber)) continue;
 
-      const coachTypeWidget = widget.locator(this.coachTypeWidgetSelector);
+      const coachTypeWidget = widget.locator(this.coachTypeWidgetLocator);
       const coachSelected = await this.selectCoachType(
         trainCoach,
         coachTypeWidget

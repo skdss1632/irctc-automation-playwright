@@ -13,7 +13,6 @@ export class PaymentMethod extends BasePage {
 
 
   async handlePaymentType(upiId) {
-    await this.verifyElementByText(this.safePaymentText);
     if (!upiId) {
       this.handleWalletPayment();
     }

@@ -1,6 +1,7 @@
 // pages/PassengerDetailsPage.js
 import { BasePage } from "./BasePage.js";
-import { TIMEOUTS,VALIDATE_LOCATOR_TIMEOUT } from "../enums/enums.js";
+import { TIMEOUTS, VALIDATE_LOCATOR_TIMEOUT } from "../enums/enums.js";
+import { expect } from "@playwright/test";
 
 export class PassengerDetailsPage extends BasePage {
   constructor(page) {
@@ -60,12 +61,9 @@ export class PassengerDetailsPage extends BasePage {
 
   async addNextPassengerForm(currentIndex) {
     await this.page.locator(this.addPassengerButton).click();
-    await this.page
-      .getByPlaceholder(this.nameInputSelector)
-      .nth(currentIndex + 1);
-    await this.verifyElementByText(this.nameInputSelector, VALIDATE_LOCATOR_TIMEOUT.PASSENGER_FROM).nth(
-      currentIndex + 1
-    );
+    const locator = this.page.getByPlaceholder(this.nameInputSelector).nth(currentIndex+1);
+    await expect(locator).toBeVisible({ timeout:VALIDATE_LOCATOR_TIMEOUT.PASSENGER_FROM });
+    await expect(locator).toBeAttached({ timeout:VALIDATE_LOCATOR_TIMEOUT.PASSENGER_FROM }); 
   }
 
   async submitPassengerDetails() {

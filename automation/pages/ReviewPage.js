@@ -1,9 +1,8 @@
 // pages/CaptchaPage.js
 import { BasePage } from "./BasePage.js";
 import { TIMEOUTS } from "../enums/enums.js";
-import { solveCaptcha, checkOCRServer } from "../utility/ocr-utility.js";
 
-export class CaptchaPage extends BasePage {
+export class ReviewPage extends BasePage {
   constructor(page) {
     super(page);
 
@@ -11,18 +10,19 @@ export class CaptchaPage extends BasePage {
     this.captchaInput = "Enter Captcha";
     this.invalidCaptchalocatorReview = "Invalid Captcha";
     this.cancellationPolicyText = "View Cancellation Policy";
+    this.captchaLocatorReview= "Captcha Image here";
+    this.safePaymentText = "Safe & Secure Payments";
   }
 
   async verifyJourneyReviewPage() {
     await this.verifyElementByText(this.cancellationPolicyText);
-    await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
   }
 
-  async processCaptcha() {
+  async processCaptcha(passengerData) {
     await this.inputCaptchaWithRetry({
-      captchaSelector: this.loginCaptchaSelector,
-      autoCaptcha: this.fetchedPassengerData.AUTOCAPTCHA,
-      invalidCaptchalocator: this.invalidCaptchalocatorReview,
+      captchaSelector: this.captchaLocatorReview,
+      autoCaptcha: passengerData.AUTO_CAPTCHA,
+      invalidCaptchalocator: this.invalidCaptchalocatorReview,textLocator: safePaymentText,
     });
   }
 
@@ -34,5 +34,11 @@ export class CaptchaPage extends BasePage {
     await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
     await this.page.keyboard.press("Enter");
     await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
+  }
+
+  async processReviewJourneyPage(passengerData){
+    await this.verifyJourneyReviewPage();
+    await this.processCaptcha(passengerData);
+    await this.submitAfterCaptcha();
   }
 }

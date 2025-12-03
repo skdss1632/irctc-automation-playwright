@@ -54,8 +54,8 @@ export class HomePage extends BasePage {
   }
 
   async enterTravelDate(date) {
-    const newDateFormat = convertDateFormat(date);
-    await this.fillInputText(this.dateInput, newDateFormat);
+    // const newDateFormat = convertDateFormat(date);
+    await this.fillInputText(this.dateInput, date);
     await this.sleepMs(
       this.randomDelay(
         TIMEOUTS.MIN_TRAIN_SEARCH_WAIT,

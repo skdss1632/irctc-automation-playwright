@@ -1,74 +1,71 @@
-// utility/validators.js
-import { Console } from "console";
-import { convertDateFormat } from "./utility";
 
-export function validatePassengerData(FETCHED_PASSENGER_DATA) {
+export function validatePassengerData(PASSENGER_DATA) {
   // Train details validation
-  if (!FETCHED_PASSENGER_DATA.TRAIN_NO) {
+  if (!PASSENGER_DATA.TRAIN_NO) {
     throw new Error("TRAIN_NO is required and cannot be empty");
   }
 
-  if (!FETCHED_PASSENGER_DATA.TRAIN_COACH || FETCHED_PASSENGER_DATA.TRAIN_COACH.trim() === "") {
+  if (!PASSENGER_DATA.TRAIN_COACH || PASSENGER_DATA.TRAIN_COACH.trim() === "") {
     throw new Error("TRAIN_COACH is required and cannot be empty");
   }
 
   // Stations validation
-  if (!FETCHED_PASSENGER_DATA.SOURCE_STATION || FETCHED_PASSENGER_DATA.SOURCE_STATION.trim() === "") {
+  if (!PASSENGER_DATA.SOURCE_STATION || PASSENGER_DATA.SOURCE_STATION.trim() === "") {
     throw new Error("SOURCE_STATION is required and cannot be empty");
   }
 
-  if (!FETCHED_PASSENGER_DATA.DESTINATION_STATION || FETCHED_PASSENGER_DATA.DESTINATION_STATION.trim() === "") {
+  if (!PASSENGER_DATA.DESTINATION_STATION || PASSENGER_DATA.DESTINATION_STATION.trim() === "") {
     throw new Error("DESTINATION_STATION is required and cannot be empty");
   }
 
   // Travel date validation
-  if (!FETCHED_PASSENGER_DATA.TRAVEL_DATE || FETCHED_PASSENGER_DATA.TRAVEL_DATE.trim() === "") {
+  if (!PASSENGER_DATA.TRAVEL_DATE || PASSENGER_DATA.TRAVEL_DATE.trim() === "") {
     throw new Error("TRAVEL_DATE is required and cannot be empty");
   }
 
-  const newDateFormat = convertDateFormat(FETCHED_PASSENGER_DATA.TRAVEL_DATE);
+  // const newDateFormat = convertDateFormat(PASSENGER_DATA.TRAVEL_DATE);
   const datePattern = /^\d{2}\/\d{2}\/\d{4}$/;
   
-  if (!datePattern.test(newDateFormat)) {
-    console.log(newDateFormat);
+  if (!datePattern.test(PASSENGER_DATA.TRAVEL_DATE)) {
+    // console.log(newDateFormat);
     throw new Error("TRAVEL_DATE must be in DD/MM/YYYY format (e.g., 30/11/2025)");
   }
 
   // Coach validation
   const validCoaches = ["SL", "2A", "3A", "3E", "1A", "CC", "EC", "2S"];
-  if (!validCoaches.includes(FETCHED_PASSENGER_DATA.TRAIN_COACH.toUpperCase())) {
+  if (!validCoaches.includes(PASSENGER_DATA.TRAIN_COACH.toUpperCase())) {
     throw new Error(
-      `Invalid TRAIN_COACH: "${FETCHED_PASSENGER_DATA.TRAIN_COACH}". Valid options: ${validCoaches.join(", ")}`
+      `Invalid TRAIN_COACH: "${PASSENGER_DATA.TRAIN_COACH}". Valid options: ${validCoaches.join(", ")}`
     );
   }
 
   // Tatkal validation
-  if (typeof FETCHED_PASSENGER_DATA.TATKAL !== "boolean") {
+  if (typeof PASSENGER_DATA.TATKAL !== "boolean") {
     throw new Error("TATKAL must be a boolean (true/false)");
   }
 
-  if (typeof FETCHED_PASSENGER_DATA.PREMIUM_TATKAL !== "boolean") {
+  if (typeof PASSENGER_DATA.PREMIUM_TATKAL !== "boolean") {
     throw new Error("PREMIUM_TATKAL must be a boolean (true/false)");
   }
 
-  if (FETCHED_PASSENGER_DATA.TATKAL && FETCHED_PASSENGER_DATA.PREMIUM_TATKAL) {
+  if (PASSENGER_DATA.TATKAL && PASSENGER_DATA.PREMIUM_TATKAL) {
     throw new Error("Cannot select both TATKAL and PREMIUM_TATKAL. Choose only one.");
   }
 
-  if (FETCHED_PASSENGER_DATA.PREMIUM_TATKAL) {
+  if (PASSENGER_DATA.PREMIUM_TATKAL) {
     const acClasses = ["1A", "2A", "3A", "3E", "CC", "EC"];
-    if (!acClasses.includes(FETCHED_PASSENGER_DATA.TRAIN_COACH.toUpperCase())) {
+    if (!acClasses.includes(PASSENGER_DATA.TRAIN_COACH.toUpperCase())) {
       throw new Error(
-        `PREMIUM_TATKAL is only available for AC classes (${acClasses.join(", ")}). Selected: ${FETCHED_PASSENGER_DATA.TRAIN_COACH}`
+        `PREMIUM_TATKAL is only available for AC classes (${acClasses.join(", ")}). Selected: ${PASSENGER_DATA.TRAIN_COACH}`
       );
     }
   }
 
   // Passenger details validation
-  validatePassengers(FETCHED_PASSENGER_DATA.PASSENGER_DETAILS);
+  validatePassengers(PASSENGER_DATA.PASSENGER_DETAILS);
 
   // Station validation
-  if (FETCHED_PASSENGER_DATA.SOURCE_STATION === FETCHED_PASSENGER_DATA.DESTINATION_STATION) {
+  if (PASSENGER_DATA.SOURCE_STATION === PASSENGER_DATA.DESTINATION_STATION) {
     throw new Error("SOURCE_STATION and DESTINATION_STATION cannot be the same");
   }
 }

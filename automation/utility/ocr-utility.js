@@ -1,4 +1,3 @@
-
 async function extractTextFromImage(
   base64ImageScreenshot,
   ocrServerUrl = "http://localhost:5000/extract-text"
@@ -21,12 +20,11 @@ async function extractTextFromImage(
     }
 
     const data = await response.json();
-
+    
     if (data && data.extracted_text) {
-      console.log("✓ OCR extracted text:", data.extracted_text);
       return data.extracted_text;
     } else {
-      throw new Error("No text extracted from OCR response");
+      throw new Error("OCR response missing extracted_text field");
     }
   } catch (error) {
     console.error("❌ OCR extraction failed:", error.message);
@@ -39,61 +37,56 @@ async function solveCaptcha(
   captchaSelector,
   ocrServerUrl = "http://localhost:5000/extract-text"
 ) {
-  const MAX_ATTEMPTS = 6;
+  try {    
+    // Wait for captcha to load
+    const captchaElement = page.getByAltText(captchaSelector);
+    await captchaElement.waitFor({ state: 'visible', timeout: 10000 });
 
-  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-    try {
-      console.log(`\n🔄 CAPTCHA OCR Attempt ${attempt}/${MAX_ATTEMPTS}`);
-      console.log("🔍 Looking for CAPTCHA image...");
+    const screenshotBuffer = await captchaElement.screenshot();
+    const base64Image = screenshotBuffer.toString("base64");
 
-      await page.getByAltText(captchaSelector);
-      console.log("📸 Capturing CAPTCHA screenshot...");
+    // Add data URI prefix
+    const fullBase64 = `data:image/png;base64,${base64Image}`;
 
-      const captchaElement = page.getByAltText(captchaSelector);
+    // Extract text
+    const captchaText = await extractTextFromImage(fullBase64, ocrServerUrl);
+    return captchaText;
 
-      // Get as Buffer, then convert
-      const screenshotBuffer = await captchaElement.screenshot();
-      const base64Image = screenshotBuffer.toString("base64");
-
-      // Add data URI prefix
-      const fullBase64 = `data:image/png;base64,${base64Image}`;
-
-      console.log("🤖 Sending to OCR server...");
-      const captchaText = await extractTextFromImage(fullBase64, ocrServerUrl);
-
-      if (!captchaText || captchaText.trim() === "") {
-        throw new Error("OCR returned empty text");
-      }
-
-      console.log(`✅ Solved CAPTCHA: ${captchaText} (attempt ${attempt})`);
-      return captchaText; // Success - return immediately
-    } catch (error) {
-      console.error(`❌ Attempt ${attempt} failed:`, error.message);
-
-      if (attempt === MAX_ATTEMPTS) {
-        console.error(`\n💥 All ${MAX_ATTEMPTS} attempts exhausted`);
-        throw new Error(
-          `CAPTCHA solving failed after ${MAX_ATTEMPTS} attempts: ${error.message}`
-        );
-      }
-    }
+  } catch (error) {
+    console.error(`❌ Failed to solve captcha:`, error.message);
+    throw error;
   }
 }
 
+
 async function checkOCRServer(serverUrl = "http://localhost:5000") {
   try {
+    console.log('🔍 Checking OCR server...');
+    
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+
     const response = await fetch(serverUrl, {
       method: "GET",
-      timeout: 5000,
+      signal: controller.signal,
     });
+
+    clearTimeout(timeout);
 
     if (response.ok) {
       console.log("✅ OCR server is running");
       return true;
     }
+    
+    console.warn(`⚠️ OCR server returned status: ${response.status}`);
     return false;
+
   } catch (error) {
-    console.error("❌ OCR server is not reachable:", error.message);
+    if (error.name === 'AbortError') {
+      console.error("❌ OCR server connection timeout");
+    } else {
+      console.error("❌ OCR server is not reachable:", error.message);
+    }
     return false;
   }
 }

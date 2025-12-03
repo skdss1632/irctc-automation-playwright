@@ -12,15 +12,16 @@ export class LoginPage extends BasePage {
     this.captchaInput = "Enter Captcha";
     this.signInText = "SIGN IN";
     this.logininvalidCaptchaText = "Invalid Captcha....";
-    this.captchaLocator = "Captcha Image here";
+    this.captchaLocatorLogin = "Captcha Image here";
     this.BASE_URL = "https://www.irctc.co.in/nget/train-search";
+    this.loginPopupText="Login & Booking With OTP"
   }
 
   async clickLoginButton() {
     await this.loginButton.click();
     await this.verifyElementByText(
-      this.signInText,
-      VALIDATE_LOCATOR_TIMEOUT.SIGN_IN_BTN
+      this.loginPopupText,
+      VALIDATE_LOCATOR_TIMEOUT.LOGIN_POPUP
     );
   }
 
@@ -31,16 +32,8 @@ export class LoginPage extends BasePage {
 
   async enterPassword(password) {
     await this.fillInputText(this.passwordInput, password, "placeholder");
-    await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
+    // await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
     await this.page.keyboard.press("Tab");
-  }
-
-  async submitLogin() {
-    await this.page.keyboard.press("Tab");
-    await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
-    await this.page.keyboard.press("Tab");
-    await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
-    await this.page.keyboard.press("Enter");
   }
 
   async gotoLoginPage() {
@@ -50,7 +43,6 @@ export class LoginPage extends BasePage {
 
   async closeDialog() {
     await this.page.keyboard.press("Enter");
-    await this.sleepMs(this.randomDelay(TIMEOUTS.SHORT, TIMEOUTS.SHORT));
   }
 
   async verifyHomePage() {
@@ -68,11 +60,9 @@ export class LoginPage extends BasePage {
     await this.enterUsername(username);
     await this.enterPassword(password);
     await this.inputCaptchaWithRetry({
-      captchaLocator: this.captchaLocator,
-      invalidCaptchalocator: this.logininvalidCaptchaText,
+      captchaLocator: this.captchaLocatorLogin,
+      invalidCaptchaLocatorLogin: this.logininvalidCaptchaText,textLocator:username
     });
-    await this.submitLogin();
-    await this.verifyElementByText(username);
     console.log("✅ Login successful");
   }
 }
