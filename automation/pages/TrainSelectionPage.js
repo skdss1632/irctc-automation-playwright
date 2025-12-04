@@ -1,35 +1,36 @@
 import { BasePage } from "./BasePage.js";
-import { TIMEOUTS } from "../enums/enums.js";
+import { TIMEOUTS,VALIDATE_LOCATOR_TIMEOUT } from "../enums/enums.js";
 
 export class TrainSelectionPage extends BasePage {
   constructor(page) {
     super(page);
 
-    // widgets
-    this.trainWidgetsSelector =
-      ".form-group.no-pad.col-xs-12.bull-back.border-all";
+    // Widget selectors (kept as strings because they're used with dynamic widget.locator())
     this.coachTypeWidgetLocator = ".white-back.col-xs-12.ng-star-inserted";
     this.bookingDateWidgetSelector = ".col-xs-12.ng-star-inserted";
-
-    //locators
-    this.seatElementsSelector = ".pre-avl";
-    this.bookNowButton = "text=Book Now";
     this.bookingDateLink = ".link.ng-star-inserted";
+    this.bookNowButton = "text=Book Now";
+
+    // Page-level locators
+    this.seatElements = ".pre-avl";
+    this.trainWidgets = this.page.locator(
+      ".form-group.no-pad.col-xs-12.bull-back.border-all"
+    );
+
+    // Text used for verification
     this.verifyPage = "Show Available Trains";
   }
 
   async selectCoachType(trainCoach, coachTypeWidget) {
-    const seatElements = await coachTypeWidget
-      .locator(this.seatElementsSelector)
-      .all();
+    const seatElements = coachTypeWidget.locator(".pre-avl").all();
 
-    for (const element of seatElements) {
-      const text = await element.textContent();
+    for (const locator of seatElements) {
+      const text = await locator.textContent();
       const cleanText = text.split("Refresh")[0].trim();
 
       if (cleanText.toLowerCase().includes(trainCoach.toLowerCase())) {
         console.log(`Matched! Clicking on: ${cleanText}`);
-        await element.click();
+        await locator.click();
         return true;
       }
     }
@@ -46,7 +47,7 @@ export class TrainSelectionPage extends BasePage {
   ) {
     const label = isTatkal || isPremiumTatkal ? "AVAILABLE" : "WL";
 
-    await this.verifyElementInWidget(bookingDateWidget, label, 60000);
+    await this.verifyElementInWidget(bookingDateWidget, label);
 
     const bookingDate = bookingDateWidget.locator(this.bookingDateLink).first();
 
@@ -69,11 +70,10 @@ export class TrainSelectionPage extends BasePage {
 
   async pickTrain(trainNumber, trainCoach, isTatkal, isPremiumTatkal) {
     await this.verifyLocatorByText(this.verifyPage);
-    const trainWidgets = this.page.locator(this.trainWidgetsSelector);
-    const count = await trainWidgets.count();
+    const count = await this.trainWidgets.count();
 
     for (let i = 0; i < count; i++) {
-      const widget = trainWidgets.nth(i);
+      const widget = this.trainWidgets.nth(i);
       const content = await widget.textContent();
 
       if (!content || !content.includes(trainNumber)) continue;

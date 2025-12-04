@@ -1,4 +1,3 @@
-// pages/PassengerDetailsPage.js
 import { BasePage } from "./BasePage.js";
 import { TIMEOUTS, VALIDATE_LOCATOR_TIMEOUT } from "../enums/enums.js";
 import { expect } from "@playwright/test";
@@ -7,16 +6,20 @@ export class PassengerDetailsPage extends BasePage {
   constructor(page) {
     super(page);
 
-    // Locators
-    this.nameInputSelector = "Name";
-    this.ageInputSelector = "Age";
-    this.genderDropdownSelector = "select[formcontrolname='passengerGender']";
-    this.seatDropdownSelector =
-      "select[formcontrolname='passengerBerthChoice']";
-    this.addPassengerButton = "text=+ Add Passenger";
-    this.autoUpgradeCheckbox = "text=Consider for Auto Upgradation";
-    this.doNotWantFood = "I don't want Food/Beverages";
-    this.continueButton = "text=Continue";
+    // Initialize locators directly
+    this.nameInputLocator = this.page.getByPlaceholder("Name");
+    this.ageInputLocator = this.page.getByPlaceholder("Age");
+    this.genderDropdownLocator = this.page.locator(
+      "select[formcontrolname='passengerGender']"
+    );
+    this.seatDropdownLocator = this.page.locator(
+      "select[formcontrolname='passengerBerthChoice']"
+    );
+    this.addPassengerButtonLocator = this.page.locator("text=+ Add Passenger");
+    this.autoUpgradeCheckboxLocator = this.page.locator(
+      "text=Consider for Auto Upgradation"
+    );
+    this.continueButtonLocator = this.page.locator("text=Continue");
   }
 
   async fillPassengerDetails(passengerDetails) {
@@ -33,44 +36,41 @@ export class PassengerDetailsPage extends BasePage {
 
   async fillSinglePassenger(passenger, index) {
     // Name
-    const nameFld = this.page
-      .getByPlaceholder(this.nameInputSelector)
-      .nth(index);
+    const nameFld = this.nameInputLocator.nth(index);
     await nameFld.click();
     await this.pressSequentially(nameFld, passenger.NAME);
 
     // Age
-    const ageFld = this.page.getByPlaceholder(this.ageInputSelector).nth(index);
+    const ageFld = this.ageInputLocator.nth(index);
     await ageFld.click();
     await this.pressSequentially(ageFld, passenger.AGE.toString());
 
     // Gender
-    const genderDropdown = this.page
-      .locator(this.genderDropdownSelector)
-      .nth(index);
+    const genderDropdown = this.genderDropdownLocator.nth(index);
     await genderDropdown.click();
     await genderDropdown.selectOption(passenger.GENDER);
 
     // Seat
-    const seatDropdown = this.page
-      .locator(this.seatDropdownSelector)
-      .nth(index);
+    const seatDropdown = this.seatDropdownLocator.nth(index);
     await seatDropdown.click();
     await seatDropdown.selectOption(passenger.SEAT);
   }
 
   async addNextPassengerForm(currentIndex) {
-    await this.page.locator(this.addPassengerButton).click();
-    const locator = this.page.getByPlaceholder(this.nameInputSelector).nth(currentIndex+1);
-    await expect(locator).toBeVisible({ timeout:VALIDATE_LOCATOR_TIMEOUT.PASSENGER_FROM });
-    await expect(locator).toBeAttached({ timeout:VALIDATE_LOCATOR_TIMEOUT.PASSENGER_FROM }); 
+    await this.addPassengerButtonLocator.click();
+    const locator = this.nameInputLocator.nth(currentIndex + 1);
+    await expect(locator).toBeVisible({
+      timeout: VALIDATE_LOCATOR_TIMEOUT.PASSENGER_FORM,
+    });
+    await expect(locator).toBeAttached({
+      timeout: VALIDATE_LOCATOR_TIMEOUT.PASSENGER_FORM,
+    });
   }
 
   async submitPassengerDetails() {
-    await this.page.locator(this.autoUpgradeCheckbox).click();
+    await this.autoUpgradeCheckboxLocator.click();
     await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
-
-    const continueBtn = this.page.locator(this.continueButton).first();
+    const continueBtn = this.continueButtonLocator.first();
     await continueBtn.click();
   }
 

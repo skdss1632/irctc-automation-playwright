@@ -8,7 +8,7 @@ export class LoginPage extends BasePage {
     super(page);
 
     // Locators
-    this.loginButton = this.page.locator("text=LOGIN").first();
+    this.loginButton = this.page.getByText("LOGIN");
     this.usernameInput = "User Name";
     this.passwordInput = "password";
     this.captchaInput = "Enter Captcha";
@@ -23,7 +23,7 @@ export class LoginPage extends BasePage {
   }
 
   async clickLoginButton() {
-    await this.page.locator(`text=${this.loginText}`).first().click();
+    await this.loginButton.first().click();
     await this.verifyLocatorByText(
       this.loginPopupText,
       VALIDATE_LOCATOR_TIMEOUT.LOGIN_POPUP

@@ -1,4 +1,4 @@
-// pages/CaptchaPage.js
+
 import { BasePage } from "./BasePage.js";
 import { TIMEOUTS, VALIDATE_LOCATOR_TIMEOUT } from "../enums/enums.js";
 
@@ -20,7 +20,7 @@ export class ReviewPage extends BasePage {
 
   async processCaptcha() {
     await this.inputCaptchaWithRetry({
-      captchaSelector: this.captchaLocatorReview,
+      captchaLocator: this.captchaLocatorReview,
       invalidCaptchaLocator: this.invalidCaptchaLocatorReview,textLocator: this.safePaymentText,timeout:VALIDATE_LOCATOR_TIMEOUT.DEFAULT
     });
   }

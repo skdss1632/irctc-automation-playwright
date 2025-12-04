@@ -1,8 +1,7 @@
-// pages/BasePage.js
 import { expect } from "@playwright/test";
 import {
   TIMEOUTS,
-  CAPTCHA_RETRY,
+  RETRY,
   VALIDATE_LOCATOR_TIMEOUT,
 } from "../enums/enums.js";
 import { solveCaptcha } from "../utility/ocr-utility";
@@ -29,50 +28,49 @@ export class BasePage {
     await page.evaluate((amount) => {
       window.scrollBy(0, amount);
     }, scrollAmount);
-    await new Promise((resolve) => setTimeout(resolve, randomDelay(500, 1000)));
+    await new Promise((resolve) => setTimeout(resolve, this.randomDelay(500, 1000)));
   }
 
   async hoverAndClick(selector, selectorType = "auto") {
-    let element;
+    let locator;
 
     switch (selectorType) {
       case "placeholder":
-        element = this.page.getByPlaceholder(selector);
+        locator = this.page.getByPlaceholder(selector);
         break;
       case "role":
-        element = this.page.getByRole(selector);
+        locator = this.page.getByRole(selector);
         break;
       case "text":
-        element = this.page.getByText(selector);
+        locator = this.page.getByText(selector);
         break;
       case "label":
-        element = this.page.getByLabel(selector);
+        locator = this.page.getByLabel(selector);
         break;
       default:
-        element = this.page.locator(selector).first();
+        locator = this.page.locator(selector).first();
     }
 
-    await element.hover();
-    await element.click();
+    // await locator.hover();
+    await locator.click();
     await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
-    return element;
+    return locator;
   }
 
   async fillInputText(locator, inputText, selectorType = "auto") {
-    const element = await this.hoverAndClick(locator, selectorType);
-    await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
+    const clickedLocator = await this.hoverAndClick(locator, selectorType);
     await this.page.keyboard.press("Control+A");
+    await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
     await this.page.keyboard.press("Backspace");
-    await this.pressSequentially(element, inputText);
-    return element;
+    await this.pressSequentially(clickedLocator, inputText);
+    return clickedLocator;
   }
 
-  async pressSequentially(element, inputText) {
-    await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
-    await element.pressSequentially(inputText, {
+  async pressSequentially(locator, inputText) {
+    await locator.pressSequentially(inputText, {
       delay: this.randomDelay(
-        TIMEOUTS.MIN_PRESS_SEQ_WAIT,
-        TIMEOUTS.MAX_PRESS_SEQ_WAIT
+        TIMEOUTS.MIN_PRESS_SEQ,
+        TIMEOUTS.MAX_PRESS_SEQ
       ),
     });
   }
@@ -111,8 +109,8 @@ export class BasePage {
   }
 
 
-async inputCaptcha(captchaText) {
-  await this.fillInputText(this.captchaInput, captchaText, "placeholder");
+async inputCaptcha(locator, captchaText) {
+  await this.fillInputText(locator, captchaText, "placeholder");
   await this.submitLogin();
 }
 
@@ -120,7 +118,7 @@ async inputCaptcha(captchaText) {
 async inputCaptchaWithRetry({
   captchaLocator,
   invalidCaptchaLocator,
-  maxAttempts = CAPTCHA_RETRY.MAX_ATTEMPT,
+  maxAttempts = RETRY.MAX_CAPTCHA_RETRY,
   textLocator,
   timeout,
 }) {
@@ -182,7 +180,7 @@ async _trySingleCaptchaAttempt({
     const captchaText = await solveCaptcha(this.page, captchaLocator);
     console.log(`🔤 OCR result: "${captchaText}"`);
 
-    await this.inputCaptcha(captchaText);
+    await this.inputCaptcha(captchaLocator,captchaText);
     const isInvalid = await this.checkInvalidCaptchaMessage({
       invalidCaptchaLocator: invalidCaptchaLocator,
     });

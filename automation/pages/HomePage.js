@@ -1,5 +1,5 @@
 import { BasePage } from "./BasePage.js";
-import { TIMEOUTS, VALIDATE_LOCATOR_TIMEOUT } from "../enums/enums.js";
+import { TIMEOUTS } from "../enums/enums.js";
 
 export class HomePage extends BasePage {
   constructor(page) {
@@ -20,8 +20,8 @@ export class HomePage extends BasePage {
     await this.fillInputText(this.fromStationInput, station);
     await this.sleepMs(
       this.randomDelay(
-        TIMEOUTS.MIN_TRAIN_SEARCH_WAIT,
-        TIMEOUTS.MAX_TRAIN_SEARCH_WAIT
+        TIMEOUTS.MEDIUM,
+        TIMEOUTS.LONG
       )
     );
     await this.page.keyboard.press("Enter");
@@ -32,8 +32,8 @@ export class HomePage extends BasePage {
     await this.fillInputText(this.toStationInput, station);
     await this.sleepMs(
       this.randomDelay(
-        TIMEOUTS.MIN_TRAIN_SEARCH_WAIT,
-        TIMEOUTS.MAX_TRAIN_SEARCH_WAIT
+        TIMEOUTS.MEDIUM,
+        TIMEOUTS.LONG
       )
     );
     await this.page.keyboard.press("Enter");
@@ -57,15 +57,15 @@ export class HomePage extends BasePage {
     await this.fillInputText(this.dateInput, date);
     await this.sleepMs(
       this.randomDelay(
-        TIMEOUTS.MIN_TRAIN_SEARCH_WAIT,
-        TIMEOUTS.MAX_TRAIN_SEARCH_WAIT
+        TIMEOUTS.MEDIUM,
+        TIMEOUTS.LONG
       )
     );
     await this.page.keyboard.press("Enter");
     await this.sleepMs(
       this.randomDelay(
-        TIMEOUTS.MIN_TRAIN_SEARCH_WAIT,
-        TIMEOUTS.MAX_TRAIN_SEARCH_WAIT
+        TIMEOUTS.MEDIUM,
+        TIMEOUTS.LONG
       )
     );
   }
