@@ -37,9 +37,9 @@ export class PaymentPage extends BasePage {
 
   async verifyPaymentPage(upiId) {
     if (upiId) {
-      await this.verifyElementByText(this.mandatePaymentText);
+      await this.verifyLocatorByText(this.mandatePaymentText);
     }
-    await this.verifyElementByText(this.walletBalanceText);
+    await this.verifyLocatorByText(this.walletBalanceText);
   }
 
   async handleUPIPayment(upiId) {

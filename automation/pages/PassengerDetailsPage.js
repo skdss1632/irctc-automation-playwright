@@ -75,7 +75,7 @@ export class PassengerDetailsPage extends BasePage {
   }
 
   async handlePassengerInput(passengerDetails) {
-    await this.verifyElementByText("+ Add Passenger");
+    await this.verifyLocatorByText("+ Add Passenger");
     await this.fillPassengerDetails(passengerDetails);
     await this.submitPassengerDetails();
   }

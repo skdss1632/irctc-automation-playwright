@@ -1,7 +1,11 @@
 // pages/BasePage.js
 import { expect } from "@playwright/test";
-import { TIMEOUTS, CAPTCHA_RETRY, VALIDATE_LOCATOR_TIMEOUT } from "../enums/enums.js";
-import {solveCaptcha} from "../utility/ocr-utility"
+import {
+  TIMEOUTS,
+  CAPTCHA_RETRY,
+  VALIDATE_LOCATOR_TIMEOUT,
+} from "../enums/enums.js";
+import { solveCaptcha } from "../utility/ocr-utility";
 
 export class BasePage {
   constructor(page) {
@@ -25,7 +29,7 @@ export class BasePage {
     await page.evaluate((amount) => {
       window.scrollBy(0, amount);
     }, scrollAmount);
-    await new Promise(resolve => setTimeout(resolve, randomDelay(500, 1000)));
+    await new Promise((resolve) => setTimeout(resolve, randomDelay(500, 1000)));
   }
 
   async hoverAndClick(selector, selectorType = "auto") {
@@ -48,10 +52,9 @@ export class BasePage {
         element = this.page.locator(selector).first();
     }
 
-    await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
     await element.hover();
-    await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
     await element.click();
+    await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
     return element;
   }
 
@@ -74,12 +77,19 @@ export class BasePage {
     });
   }
 
-  async verifyElementByText(text, timeout = VALIDATE_LOCATOR_TIMEOUT.DEFAULT) {
-    const locator = this.page.locator(`text=${text}`).first();
+  async verifyLocatorByText(text, timeout = VALIDATE_LOCATOR_TIMEOUT.DEFAULT) {
+  const locator = this.page.locator(`text=${text}`).first();
+
+  try {
     await expect(locator).toBeVisible({ timeout });
-    await expect(locator).toBeAttached({ timeout });
-    return locator;
+    await expect(locator).toBeAttached({ timeout });  
+    return true
+  } catch (error) {
+    console.error(`verifyLocatorByText failed for text "${text}"`, error);
+    throw error; 
   }
+}
+
 
   async verifyElementInWidget(
     widget,
@@ -92,7 +102,7 @@ export class BasePage {
     return locator;
   }
 
-   async submitLogin() {
+  async submitLogin() {
     await this.page.keyboard.press("Tab");
     await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
     await this.page.keyboard.press("Tab");
@@ -100,166 +110,109 @@ export class BasePage {
     await this.page.keyboard.press("Enter");
   }
 
-  async inputCaptcha(captchaText) {
-    // Fill CAPTCHA input
-    await this.fillInputText(this.captchaInput, captchaText, "placeholder");
-    await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
-    await this.submitLogin();
-    await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
-  }
 
-  // async inputCaptchaWithRetry({
-  //   captchaLocator,
-  //   invalidCaptchaLocatorLogin,
-  //   invalidCaptchaLocatorReview,
-  //   maxAttempts = CAPTCHA_RETRY.MAX_ATTEMPT,
-  //   textLocator,
-  // }) {
-
-  //   let captchaSolved = false;
-  //   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-  //     console.log(`🔁 CAPTCHA Attempt ${attempt}/${maxAttempts}`);
-  //     try {
-  //       const captchaText = await solveCaptcha(this.page, captchaLocator);
-  //       await this.inputCaptcha(captchaText);
-  //       await this.verifyElementByText(textLocator);
-
-  //       const isInvalid = await this.checkInvalidCaptchaMessage({
-  //         invalidCaptchaLocatorLogin: invalidCaptchaLocatorLogin,
-  //         invalidCaptchaLocatorReview: invalidCaptchaLocatorReview,
-  //       });
-
-  //       if (isInvalid) {
-  //         console.log(
-  //           `❌ Attempt ${attempt}: Invalid Captcha detected, retrying...`
-  //         );
-  //         continue; // Go to next attempt
-  //       } else {
-  //         console.log(`✅ Attempt ${attempt}: Captcha accepted successfully!`);
-  //         captchaSolved = true;
-  //         break; // Exit loop
-  //       }
-  //     } catch (error) {
-  //       console.log(`⚠️ Attempt ${attempt}: Error occurred - ${error.message}`);
-  //       await this.sleepMs(this.randomDelay(TIMEOUTS.SHORT, TIMEOUTS.MEDIUM));
-  //       continue;
-  //     }
-  //   }
-
-  //   if (!captchaSolved) {
-  //     throw new Error(
-  //       `❌ Failed to solve CAPTCHA after ${maxAttempts} attempts.`
-  //     );
-  //   }
-
-  //   return captchaSolved;  
-  // }
+async inputCaptcha(captchaText) {
+  await this.fillInputText(this.captchaInput, captchaText, "placeholder");
+  await this.submitLogin();
+}
 
 
-  async inputCaptchaWithRetry({
+async inputCaptchaWithRetry({
+  captchaLocator,
+  invalidCaptchaLocator,
+  maxAttempts = CAPTCHA_RETRY.MAX_ATTEMPT,
+  textLocator,
+  timeout,
+}) {
+  const captchaSolved = await this._attemptCaptchaSolving({
     captchaLocator,
-    invalidCaptchaLocatorLogin,
-    invalidCaptchaLocatorReview,
-    maxAttempts = CAPTCHA_RETRY.MAX_ATTEMPT,
-    textLocator,
-  }) {
-    console.log(`🎯 Starting captcha solving (max ${maxAttempts} attempts)\n`);
-
-    const captchaSolved = await this._attemptCaptchaSolving({
-      captchaLocator,
-      invalidCaptchaLocatorLogin,
-      invalidCaptchaLocatorReview,
-      textLocator,
-      maxAttempts,
-    });
-
-    if (!captchaSolved) {
-      throw new Error(
-        `❌ Failed to solve CAPTCHA after ${maxAttempts} attempts.`
-      );
-    }
-
-    return captchaSolved;
-  }
-
-
-  async _attemptCaptchaSolving({
-    captchaLocator,
-    invalidCaptchaLocatorLogin,
-    invalidCaptchaLocatorReview,
+    invalidCaptchaLocator,
     textLocator,
     maxAttempts,
-  }) {
-    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-      console.log(`🔁 CAPTCHA Attempt ${attempt}/${maxAttempts}`);
+    timeout,
+  });
 
-      try {
-        const success = await this._trySingleCaptchaAttempt({
-          captchaLocator,
-          invalidCaptchaLocatorLogin,
-          invalidCaptchaLocatorReview,
-          textLocator,
-          attempt,
-        });
-
-        if (success) {
-          console.log(`✅ Attempt ${attempt}: Captcha accepted successfully!`);
-          return true;
-        }
-
-        console.log(`❌ Attempt ${attempt}: Invalid Captcha detected, retrying...`);
-
-      } catch (error) {
-        console.log(`⚠️ Attempt ${attempt}: Error occurred - ${error.message}`);
-        await this.sleepMs(this.randomDelay(TIMEOUTS.SHORT, TIMEOUTS.MEDIUM));
-      }
-    }
-
-    return false;
+  if (!captchaSolved) {
+    throw new Error(
+      `❌ Failed to solve CAPTCHA after ${maxAttempts} attempts.`
+    );
   }
 
+  return true;  // ✅ Explicit success return
+}
 
-  async _trySingleCaptchaAttempt({
-    captchaLocator,
-    invalidCaptchaLocatorLogin,
-    invalidCaptchaLocatorReview,
-    textLocator,
-    attempt,
-  }) {
-    // Solve captcha using OCR
-    const captchaText = await solveCaptcha(this.page, captchaLocator);
 
-    // Input captcha text
-    await this.inputCaptcha(captchaText);
+async _attemptCaptchaSolving({
+  captchaLocator,
+  invalidCaptchaLocator,
+  textLocator,
+  maxAttempts,
+  timeout,
+}) {
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    console.log(`🔁 CAPTCHA Attempt ${attempt}/${maxAttempts}`);
 
-      // Check if invalid captcha message appears
-    const isInvalid = await this.checkInvalidCaptchaMessage({
-      invalidCaptchaLocatorLogin: invalidCaptchaLocatorLogin,
-      invalidCaptchaLocatorReview: invalidCaptchaLocatorReview,
+    const isSuccess = await this._trySingleCaptchaAttempt({
+      captchaLocator,
+      invalidCaptchaLocator,
+      textLocator,
+      timeout,
     });
 
-    // Verify expected element appears
-    await this.verifyElementByText(textLocator);
+    if (isSuccess) {
+      console.log(`✅ Attempt ${attempt}: Captcha solved successfully!\n`);
+      return true;
+    }
 
-    // Return success if NOT invalid
-    return !isInvalid;
+    console.log(`❌ Attempt ${attempt}: Invalid captcha, retrying...\n`);
   }
 
- 
+  console.error(`❌ All ${maxAttempts} captcha attempts failed\n`);
+  return false;
+}
 
-  async checkInvalidCaptchaMessage({
-    invalidCaptchaLocatorLogin = null,
-    invalidCaptchaLocatorReview = null,
-    timeout = VALIDATE_LOCATOR_TIMEOUT.INVALID_CAPTCHA,
-  }) {
-    const locator = invalidCaptchaLocatorLogin || invalidCaptchaLocatorReview;
-    try{
-      await this.verifyElementByText(locator, timeout);
-      return true;
-    }catch(e){
+
+async _trySingleCaptchaAttempt({
+  captchaLocator,
+  invalidCaptchaLocator,
+  textLocator,
+  timeout,
+}) {
+ 
+    const captchaText = await solveCaptcha(this.page, captchaLocator);
+    console.log(`🔤 OCR result: "${captchaText}"`);
+
+    await this.inputCaptcha(captchaText);
+    const isInvalid = await this.checkInvalidCaptchaMessage({
+      invalidCaptchaLocator: invalidCaptchaLocator,
+    });
+
+    if (isInvalid) {
+      // Captcha was wrong
       return false;
     }
+
+    // 4. Captcha was correct - verify success page element
+    console.log('✅ Captcha valid, verifying success element...');
+    await this.verifyLocatorByText(textLocator, timeout);
+    return true;  // Success!
+}
+
+
+async checkInvalidCaptchaMessage({
+  invalidCaptchaLocator,
+  timeout = VALIDATE_LOCATOR_TIMEOUT.INVALID_CAPTCHA,
+}) {
+  try {
+    let result = await this.verifyLocatorByText(invalidCaptchaLocator, timeout);
+    if (result){
+      return result;
+    }
+  } catch (e) {
+    return false;  // Invalid message not found (captcha is valid)
   }
+}
+
 
   async randomMouseMovement() {
     const viewport = this.page.viewportSize();

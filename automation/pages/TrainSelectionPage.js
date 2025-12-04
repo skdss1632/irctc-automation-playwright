@@ -68,7 +68,7 @@ export class TrainSelectionPage extends BasePage {
   }
 
   async pickTrain(trainNumber, trainCoach, isTatkal, isPremiumTatkal) {
-    await this.verifyElementByText(this.verifyPage);
+    await this.verifyLocatorByText(this.verifyPage);
     const trainWidgets = this.page.locator(this.trainWidgetsSelector);
     const count = await trainWidgets.count();
 

@@ -1,5 +1,7 @@
 import { BasePage } from "./BasePage.js";
 import { TIMEOUTS, VALIDATE_LOCATOR_TIMEOUT } from "../enums/enums.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 export class LoginPage extends BasePage {
   constructor(page) {
@@ -13,13 +15,16 @@ export class LoginPage extends BasePage {
     this.signInText = "SIGN IN";
     this.logininvalidCaptchaText = "Invalid Captcha....";
     this.captchaLocatorLogin = "Captcha Image here";
-    this.BASE_URL = "https://www.irctc.co.in/nget/train-search";
-    this.loginPopupText="Login & Booking With OTP"
+    this.BASE_URL = process.env.WEB_BASE_URL;
+    this.loginPopupText = "Login & Booking With OTP";
+    this.exclusiveText = "IRCTC EXCLUSIVE";
+    this.loginText = "LOGIN";
+    this.verifyLoginText="Welcome"
   }
 
   async clickLoginButton() {
-    await this.loginButton.click();
-    await this.verifyElementByText(
+    await this.page.locator(`text=${this.loginText}`).first().click();
+    await this.verifyLocatorByText(
       this.loginPopupText,
       VALIDATE_LOCATOR_TIMEOUT.LOGIN_POPUP
     );
@@ -45,8 +50,8 @@ export class LoginPage extends BasePage {
   }
 
   async verifyHomePage() {
-    await this.verifyElementByText(
-      "IRCTC EXCLUSIVE",
+    await this.verifyLocatorByText(
+      this.exclusiveText,
       VALIDATE_LOCATOR_TIMEOUT.HOME_PAGE
     );
   }
@@ -60,7 +65,9 @@ export class LoginPage extends BasePage {
     await this.enterPassword(password);
     await this.inputCaptchaWithRetry({
       captchaLocator: this.captchaLocatorLogin,
-      invalidCaptchaLocatorLogin: this.logininvalidCaptchaText,textLocator:username
+      invalidCaptchaLocatorLogin: this.logininvalidCaptchaText,
+      textLocator: this.verifyLoginText,
+      timeout:VALIDATE_LOCATOR_TIMEOUT.USER_NAME,
     });
     console.log("✅ Login successful");
   }

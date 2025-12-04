@@ -1,6 +1,6 @@
 // pages/CaptchaPage.js
 import { BasePage } from "./BasePage.js";
-import { TIMEOUTS } from "../enums/enums.js";
+import { TIMEOUTS, VALIDATE_LOCATOR_TIMEOUT } from "../enums/enums.js";
 
 export class ReviewPage extends BasePage {
   constructor(page) {
@@ -8,21 +8,20 @@ export class ReviewPage extends BasePage {
 
     // Locators
     this.captchaInput = "Enter Captcha";
-    this.invalidCaptchalocatorReview = "Invalid Captcha";
+    this.invalidCaptchaLocatorReview = "Invalid Captcha";
     this.cancellationPolicyText = "View Cancellation Policy";
     this.captchaLocatorReview= "Captcha Image here";
     this.safePaymentText = "Safe & Secure Payments";
   }
 
   async verifyJourneyReviewPage() {
-    await this.verifyElementByText(this.cancellationPolicyText);
+    await this.verifyLocatorByText(this.cancellationPolicyText);
   }
 
-  async processCaptcha(passengerData) {
+  async processCaptcha() {
     await this.inputCaptchaWithRetry({
       captchaSelector: this.captchaLocatorReview,
-      autoCaptcha: passengerData.AUTO_CAPTCHA,
-      invalidCaptchalocator: this.invalidCaptchalocatorReview,textLocator: this.safePaymentText,
+      invalidCaptchaLocator: this.invalidCaptchaLocatorReview,textLocator: this.safePaymentText,timeout:VALIDATE_LOCATOR_TIMEOUT.DEFAULT
     });
   }
 
@@ -36,9 +35,9 @@ export class ReviewPage extends BasePage {
     await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
   }
 
-  async processReviewJourneyPage(passengerData){
+  async processReviewJourneyPage(){
     await this.verifyJourneyReviewPage();
-    await this.processCaptcha(passengerData);
+    await this.processCaptcha();
     await this.submitAfterCaptcha();
   }
 }

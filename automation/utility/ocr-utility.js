@@ -1,11 +1,16 @@
-// utility/ocr-utility.js
+import dotenv from "dotenv";
+dotenv.config();
 
-/**
- * Extract text from base64 image using OCR server
- */
+if (!process.env.BASE_URL) {
+  console.error('❌ BASE_URL not found in .env file');
+  throw new Error('BASE_URL environment variable is required');
+}
+console.log('✅ Loaded BASE_URL:', process.env.BASE_URL);
+
+
 export async function extractTextFromImage(
   base64ImageScreenshot,
-  ocrServerUrl = "http://localhost:5000/extract-text"
+  ocrServerUrl  
 ) {
   try {
     const response = await fetch(ocrServerUrl, {
@@ -37,21 +42,15 @@ export async function extractTextFromImage(
   }
 }
 
-/**
- * Solve captcha using OCR
- */
+
 export async function solveCaptcha(
   page,
   captchaSelector,
-  ocrServerUrl = "http://localhost:5000/extract-text"
+  ocrServerUrl = `${process.env.BASE_URL}/extract-text` 
 ) {
   try {
-    console.log(`🔍 Looking for captcha: "${captchaSelector}"`);
-    
     const captchaElement = page.getByAltText(captchaSelector);
-    await captchaElement.waitFor({ state: 'visible', timeout: 10000 });
 
-    console.log('📸 Taking captcha screenshot...');
     const screenshotBuffer = await captchaElement.screenshot();
     const base64Image = screenshotBuffer.toString("base64");
 
@@ -59,10 +58,6 @@ export async function solveCaptcha(
 
     console.log('🔤 Sending to OCR server...');
     const captchaText = await extractTextFromImage(fullBase64, ocrServerUrl);
-
-    if (!captchaText || captchaText.trim() === "") {
-      throw new Error("OCR returned empty text");
-    }
 
     console.log(`✅ OCR result: "${captchaText}"`);
     return captchaText.trim();
@@ -73,15 +68,10 @@ export async function solveCaptcha(
   }
 }
 
-/**
- * Check if OCR server is running
- */
-export async function checkOCRServer(serverUrl = "http://localhost:5000") {
+
+export async function checkOCRServer(serverUrl = process.env.BASE_URL) {
   try {
-    console.log('🔍 Checking OCR server...');
-    
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
 
     const response = await fetch(serverUrl, {
       method: "GET",

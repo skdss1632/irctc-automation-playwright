@@ -1,8 +1,9 @@
 import { test } from "../fixtures/kameleo.fixture.js";
-import { sleepMs, randomDelay,waitUntilTatkalBookingTime,validatePassengerData } from "../utility.js";
+import { sleepMs, randomDelay, waitUntilTatkalBookingTime,validatePassengerData } from "../utility/utility.js";
 import { TIMEOUTS } from "../enums/enums.js";
 import PASSENGER_DATA from "../fixtures/passenger.data.json" assert {type:"json"};
-import ENV from "../irctc.env" assert{type:"json"};
+import dotenv from "dotenv"
+dotenv.config();
 
 // Page Objects
 import { LoginPage } from "../pages/LoginPage.js";
@@ -14,6 +15,7 @@ import {ReviewPage} from "../pages/ReviewPage.js"
 
 test.beforeAll(async () => {
   validatePassengerData(PASSENGER_DATA);
+
 });
 
 test("automated ticket booking", async ({ page }) => {
@@ -27,8 +29,8 @@ test("automated ticket booking", async ({ page }) => {
 
   // Login
   await loginPage.performLogin(
-    ENV.USERNAME,
-    ENV.PASSWORD,
+    process.env.ACCOUNT_USERNAME,
+    process.env.ACCOUNT_PASSWORD,
   );
 
   // Search train
@@ -54,7 +56,7 @@ test("automated ticket booking", async ({ page }) => {
     PASSENGER_DATA.PASSENGER_DETAILS
   );
 
-  await reviewPage.processReviewJourneyPage(PASSENGER_DATA);
+  await reviewPage.processReviewJourneyPage();
 
   await paymentPage.processPaymentType(PASSENGER_DATA.UPI_ID_CONFIG);
 
