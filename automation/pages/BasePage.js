@@ -48,8 +48,6 @@ export class BasePage {
       default:
         locator = this.page.locator(selector).first();
     }
-
-    // await locator.hover();
     await locator.click();
     await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
     return locator;
@@ -175,6 +173,7 @@ export class BasePage {
     console.log(`🔤 OCR result: "${captchaText}"`);
 
     await this.inputCaptcha(captchaInput, captchaText);
+    await this.sleepMs(this.randomDelay(TIMEOUTS.SHORT, TIMEOUTS.MEDIUM));
     const isInvalid = await this.checkInvalidCaptchaMessage({
       invalidCaptchaLocator: invalidCaptchaLocator,
     });
