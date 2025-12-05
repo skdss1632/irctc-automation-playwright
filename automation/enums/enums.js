@@ -1,15 +1,15 @@
 const TIMEOUTS = Object.freeze({
-  VERY_SHORT: 120,
-  SHORT: 135,
+  VERY_SHORT: 115,
+  SHORT: 130,
   MEDIUM: 1500,
   LONG: 2000,
   VERY_LONG: 5000,
-  MIN_PRESS_SEQ: 45,
-  MAX_PRESS_SEQ: 70,
+  MIN_PRESS_SEQ: 40,
+  MAX_PRESS_SEQ: 65,
 });
 
 const RETRY = Object.freeze({
-  MAX_CAPTCHA_RETRY: 8,
+  MAX_CAPTCHA_RETRY: 13,
 });
 
 const VALIDATE_LOCATOR_TIMEOUT=Object.freeze({

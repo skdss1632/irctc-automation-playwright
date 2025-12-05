@@ -1,4 +1,3 @@
-
 import { BasePage } from "./BasePage.js";
 import { TIMEOUTS, VALIDATE_LOCATOR_TIMEOUT } from "../enums/enums.js";
 
@@ -10,7 +9,7 @@ export class ReviewPage extends BasePage {
     this.captchaInput = "Enter Captcha";
     this.invalidCaptchaLocatorReview = "Invalid Captcha";
     this.cancellationPolicyText = "View Cancellation Policy";
-    this.captchaLocatorReview= "Captcha Image here";
+    this.captchaLocatorReview = "Captcha Image here";
     this.safePaymentText = "Safe & Secure Payments";
   }
 
@@ -20,13 +19,15 @@ export class ReviewPage extends BasePage {
 
   async processCaptcha() {
     await this.inputCaptchaWithRetry({
-      captchaInput:this.captchaInput,
+      captchaInput: this.captchaInput,
       captchaLocator: this.captchaLocatorReview,
-      invalidCaptchaLocator: this.invalidCaptchaLocatorReview,textLocator: this.safePaymentText,timeout:VALIDATE_LOCATOR_TIMEOUT.DEFAULT
+      invalidCaptchaLocator: this.invalidCaptchaLocatorReview,
+      textLocator: this.safePaymentText,
+      timeout: VALIDATE_LOCATOR_TIMEOUT.DEFAULT,
     });
   }
 
-  async processReviewJourneyPage(){
+  async processReviewJourneyPage() {
     await this.verifyJourneyReviewPage();
     await this.processCaptcha();
   }

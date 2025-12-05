@@ -15,27 +15,16 @@ export class HomePage extends BasePage {
     this.premiumTatkalOption = "//li[contains(@aria-label, 'PREMIUM TATKAL')]";
   }
 
-
   async enterFromStation(station) {
     await this.fillInputText(this.fromStationInput, station);
-    await this.sleepMs(
-      this.randomDelay(
-        TIMEOUTS.MEDIUM,
-        TIMEOUTS.LONG
-      )
-    );
+    await this.sleepMs(this.randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
     await this.page.keyboard.press("Enter");
     await this.sleepMs(this.randomDelay(TIMEOUTS.SHORT, TIMEOUTS.SHORT));
   }
 
   async enterToStation(station) {
     await this.fillInputText(this.toStationInput, station);
-    await this.sleepMs(
-      this.randomDelay(
-        TIMEOUTS.MEDIUM,
-        TIMEOUTS.LONG
-      )
-    );
+    await this.sleepMs(this.randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
     await this.page.keyboard.press("Enter");
     await this.sleepMs(this.randomDelay(TIMEOUTS.SHORT, TIMEOUTS.SHORT));
   }
@@ -55,19 +44,9 @@ export class HomePage extends BasePage {
   async enterTravelDate(date) {
     // const newDateFormat = convertDateFormat(date);
     await this.fillInputText(this.dateInput, date);
-    await this.sleepMs(
-      this.randomDelay(
-        TIMEOUTS.MEDIUM,
-        TIMEOUTS.LONG
-      )
-    );
+    await this.sleepMs(this.randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
     await this.page.keyboard.press("Enter");
-    await this.sleepMs(
-      this.randomDelay(
-        TIMEOUTS.MEDIUM,
-        TIMEOUTS.LONG
-      )
-    );
+    await this.sleepMs(this.randomDelay(TIMEOUTS.MEDIUM, TIMEOUTS.LONG));
   }
 
   async searchTrain(

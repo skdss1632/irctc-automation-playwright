@@ -45,8 +45,8 @@ test("automated ticket booking", async ({ page }) => {
   );
 
   // Pick train
-  // waitUntilTatkalBookingTime(PASSENGER_DATA);
-  await trainSelectionPage.pickTrain(
+  waitUntilTatkalBookingTime(PASSENGER_DATA);
+  await trainSelectionPage.selectTrain(
     PASSENGER_DATA.TRAIN_NO,
     PASSENGER_DATA.TRAIN_COACH,
     PASSENGER_DATA.TATKAL,

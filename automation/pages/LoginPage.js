@@ -19,7 +19,7 @@ export class LoginPage extends BasePage {
     this.loginPopupText = "Login & Booking With OTP";
     this.exclusiveText = "IRCTC EXCLUSIVE";
     this.loginText = "LOGIN";
-    this.verifyLoginText="Welcome"
+    this.verifyLoginText = "Welcome";
   }
 
   async clickLoginButton() {
@@ -57,15 +57,14 @@ export class LoginPage extends BasePage {
   }
 
   async processCaptcha() {
-     await this.inputCaptchaWithRetry({
-      captchaInput:this.captchaInput,
+    await this.inputCaptchaWithRetry({
+      captchaInput: this.captchaInput,
       captchaLocator: this.captchaLocatorLogin,
       invalidCaptchaLocatorLogin: this.logininvalidCaptchaText,
       textLocator: this.verifyLoginText,
-      timeout:VALIDATE_LOCATOR_TIMEOUT.USER_NAME,
+      timeout: VALIDATE_LOCATOR_TIMEOUT.USER_NAME,
     });
   }
-
 
   async performLogin(username, password) {
     await this.gotoLoginPage();

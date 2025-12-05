@@ -25,7 +25,7 @@ export class PaymentPage extends BasePage {
   async verifyPaymentPage(upiId) {
     if (upiId) {
       await this.verifyLocatorByText(this.mandatePaymentText);
-    }else{
+    } else {
       await this.verifyLocatorByText(this.walletBalanceText);
     }
   }
@@ -37,7 +37,9 @@ export class PaymentPage extends BasePage {
     const upiInput = this.upiMandateWrapper.locator(this.upiInputField);
     await upiInput.click();
     await upiInput.pressSequentially(upiId, {
-      delay: this.randomDelay(TIMEOUTS.MIN_PRESS_SEQ, TIMEOUTS.MAX_PRESS_SEQ),
+      delay: this.sleepMs(
+        this.randomDelay(TIMEOUTS.MIN_PRESS_SEQ, TIMEOUTS.MAX_PRESS_SEQ)
+      ),
     });
     await this.upiPayButton.click();
   }

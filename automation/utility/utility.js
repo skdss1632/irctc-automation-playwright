@@ -1,11 +1,11 @@
 import { TIMEOUTS } from "../enums/enums.js";
 import { expect } from "@playwright/test";
 
-async function waitUntilTatkalBookingTime(FETCHED_PASSENGER_DATA) {
+async function waitUntilTatkalBookingTime(PASSENGER_DATA) {
   // Internal business rules
   let targetHour, targetMinute, targetSecond;
 
-  if (FETCHED_PASSENGER_DATA.TRAIN_COACH === "SL") {
+  if (PASSENGER_DATA.TRAIN_COACH === "SL") {
     targetHour = 10;
     targetMinute = 0;
     targetSecond = 2;
@@ -27,7 +27,7 @@ async function waitUntilTatkalBookingTime(FETCHED_PASSENGER_DATA) {
       break;
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await sleepMs(50);
   }
 }
 

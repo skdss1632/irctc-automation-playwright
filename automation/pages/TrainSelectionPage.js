@@ -1,5 +1,5 @@
 import { BasePage } from "./BasePage.js";
-import { TIMEOUTS,VALIDATE_LOCATOR_TIMEOUT } from "../enums/enums.js";
+import { TIMEOUTS, VALIDATE_LOCATOR_TIMEOUT } from "../enums/enums.js";
 
 export class TrainSelectionPage extends BasePage {
   constructor(page) {
@@ -21,7 +21,7 @@ export class TrainSelectionPage extends BasePage {
     this.verifyPage = "Show Available Trains";
   }
 
-  async selectCoachType(trainCoach, coachTypeWidget) {
+  async pickCoachType(trainCoach, coachTypeWidget) {
     const seatElements = await coachTypeWidget.locator(".pre-avl").all();
 
     for (const locator of seatElements) {
@@ -31,6 +31,9 @@ export class TrainSelectionPage extends BasePage {
       if (cleanText.toLowerCase().includes(trainCoach.toLowerCase())) {
         console.log(`Matched! Clicking on: ${cleanText}`);
         await locator.click();
+        await this.sleepMs(
+          this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT)
+        );
         return true;
       }
     }
@@ -68,7 +71,7 @@ export class TrainSelectionPage extends BasePage {
     }
   }
 
-  async pickTrain(trainNumber, trainCoach, isTatkal, isPremiumTatkal) {
+  async selectTrain(trainNumber, trainCoach, isTatkal, isPremiumTatkal) {
     await this.verifyLocatorByText(this.verifyPage);
     const count = await this.trainWidgets.count();
 
@@ -79,7 +82,7 @@ export class TrainSelectionPage extends BasePage {
       if (!content || !content.includes(trainNumber)) continue;
 
       const coachTypeWidget = widget.locator(this.coachTypeWidgetLocator);
-      const coachSelected = await this.selectCoachType(
+      const coachSelected = await this.pickCoachType(
         trainCoach,
         coachTypeWidget
       );
@@ -93,9 +96,9 @@ export class TrainSelectionPage extends BasePage {
         isTatkal,
         isPremiumTatkal
       );
-      await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
 
       await widget.locator(this.bookNowButton).click();
+      // no need to wait here will next page wait for page verification
       console.log("✅ Clicked on Book Now button");
 
       return true;

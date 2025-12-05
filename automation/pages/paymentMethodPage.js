@@ -1,4 +1,3 @@
-
 import { BasePage } from "./BasePage.js";
 import { TIMEOUTS } from "../enums/enums.js";
 
