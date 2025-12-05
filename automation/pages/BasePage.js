@@ -100,22 +100,23 @@ export class BasePage {
     return locator;
   }
 
-  async submitLogin() {
-    await this.page.keyboard.press("Tab");
-    await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
-    await this.page.keyboard.press("Tab");
-    await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
+    async submitCaptcha() {
+     await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
     await this.page.keyboard.press("Enter");
+    await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
   }
 
 
 async inputCaptcha(locator, captchaText) {
   await this.fillInputText(locator, captchaText, "placeholder");
-  await this.submitLogin();
+  await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
+  // submit captcha will keep here only so can validate captcha is successful or not so we can retry if needed
+  await this.submitCaptcha();
 }
 
 
 async inputCaptchaWithRetry({
+  captchaInput,
   captchaLocator,
   invalidCaptchaLocator,
   maxAttempts = RETRY.MAX_CAPTCHA_RETRY,
@@ -123,6 +124,7 @@ async inputCaptchaWithRetry({
   timeout,
 }) {
   const captchaSolved = await this._attemptCaptchaSolving({
+    captchaInput,
     captchaLocator,
     invalidCaptchaLocator,
     textLocator,
@@ -141,6 +143,7 @@ async inputCaptchaWithRetry({
 
 
 async _attemptCaptchaSolving({
+  captchaInput,
   captchaLocator,
   invalidCaptchaLocator,
   textLocator,
@@ -151,6 +154,7 @@ async _attemptCaptchaSolving({
     console.log(`🔁 CAPTCHA Attempt ${attempt}/${maxAttempts}`);
 
     const isSuccess = await this._trySingleCaptchaAttempt({
+      captchaInput,
       captchaLocator,
       invalidCaptchaLocator,
       textLocator,
@@ -171,6 +175,7 @@ async _attemptCaptchaSolving({
 
 
 async _trySingleCaptchaAttempt({
+  captchaInput,
   captchaLocator,
   invalidCaptchaLocator,
   textLocator,
@@ -180,7 +185,7 @@ async _trySingleCaptchaAttempt({
     const captchaText = await solveCaptcha(this.page, captchaLocator);
     console.log(`🔤 OCR result: "${captchaText}"`);
 
-    await this.inputCaptcha(captchaLocator,captchaText);
+    await this.inputCaptcha(captchaInput,captchaText);
     const isInvalid = await this.checkInvalidCaptchaMessage({
       invalidCaptchaLocator: invalidCaptchaLocator,
     });
@@ -204,7 +209,7 @@ async checkInvalidCaptchaMessage({
   try {
     let result = await this.verifyLocatorByText(invalidCaptchaLocator, timeout);
     if (result){
-      return result;
+      return true;
     }
   } catch (e) {
     return false;  // Invalid message not found (captcha is valid)

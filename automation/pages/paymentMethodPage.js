@@ -2,7 +2,7 @@
 import { BasePage } from "./BasePage.js";
 import { TIMEOUTS } from "../enums/enums.js";
 
-export class PaymentMethod extends BasePage {
+export class PaymentMethodPage extends BasePage {
   constructor(page) {
     super(page);
 
@@ -13,11 +13,11 @@ export class PaymentMethod extends BasePage {
     );
   }
 
-  async handlePaymentType(upiId) {
+  async handlePaymentMethod(upiId) {
     if (!upiId) {
       await this.walletPayMethodText.click();
     }
-    // Click Pay and Book button
     await this.payAndBookButton.click();
+    // no need to wait here as next page will auto wait upto 60 seconds to verify payment page
   }
 }

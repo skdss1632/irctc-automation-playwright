@@ -25,15 +25,16 @@ export class PaymentPage extends BasePage {
   async verifyPaymentPage(upiId) {
     if (upiId) {
       await this.verifyLocatorByText(this.mandatePaymentText);
+    }else{
+      await this.verifyLocatorByText(this.walletBalanceText);
     }
-    await this.verifyLocatorByText(this.walletBalanceText);
   }
 
   async handleUPIPayment(upiId) {
     await this.verifyPaymentPage(upiId);
-    await this.upiMandateRadioButton.check();
+    await this.upiMandateRadioButton.click();
     await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
-    const upiInput = upiMandateWrapper.locator(this.upiInputField);
+    const upiInput = this.upiMandateWrapper.locator(this.upiInputField);
     await upiInput.click();
     await upiInput.pressSequentially(upiId, {
       delay: this.randomDelay(TIMEOUTS.MIN_PRESS_SEQ, TIMEOUTS.MAX_PRESS_SEQ),
@@ -42,10 +43,10 @@ export class PaymentPage extends BasePage {
   }
 
   async confirmWalletPayment() {
-    await confirmWalletBtn.click();
+    await this.confirmWalletBtn.click();
     await this.sleepMs(this.randomDelay(TIMEOUTS.VERY_SHORT, TIMEOUTS.SHORT));
     // Click final payment button
-    // await this.walletFinalButton).click();
+    // await this.walletFinalButton.click();
   }
 
   async processPaymentType(upiId) {
@@ -53,7 +54,7 @@ export class PaymentPage extends BasePage {
     if (upiId) {
       await this.handleUPIPayment(upiId);
     } else {
-      await this.confirmWalletPayment(confirmWallet);
+      await this.confirmWalletPayment();
     }
   }
 }

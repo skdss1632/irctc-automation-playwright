@@ -56,6 +56,17 @@ export class LoginPage extends BasePage {
     );
   }
 
+  async processCaptcha() {
+     await this.inputCaptchaWithRetry({
+      captchaInput:this.captchaInput,
+      captchaLocator: this.captchaLocatorLogin,
+      invalidCaptchaLocatorLogin: this.logininvalidCaptchaText,
+      textLocator: this.verifyLoginText,
+      timeout:VALIDATE_LOCATOR_TIMEOUT.USER_NAME,
+    });
+  }
+
+
   async performLogin(username, password) {
     await this.gotoLoginPage();
     await this.closeDialog();
@@ -63,12 +74,7 @@ export class LoginPage extends BasePage {
     await this.clickLoginButton();
     await this.enterUsername(username);
     await this.enterPassword(password);
-    await this.inputCaptchaWithRetry({
-      captchaLocator: this.captchaLocatorLogin,
-      invalidCaptchaLocatorLogin: this.logininvalidCaptchaText,
-      textLocator: this.verifyLoginText,
-      timeout:VALIDATE_LOCATOR_TIMEOUT.USER_NAME,
-    });
+    await this.processCaptcha();
     console.log("✅ Login successful");
   }
 }

@@ -11,7 +11,8 @@ import { HomePage } from "../pages/HomePage.js";
 import { TrainSelectionPage } from "../pages/TrainSelectionPage.js";
 import { PassengerDetailsPage } from "../pages/PassengerDetailsPage.js";
 import { PaymentPage } from "../pages/PaymentPage.js";
-import {ReviewPage} from "../pages/ReviewPage.js"
+import {ReviewPage} from "../pages/ReviewPage.js";
+import { PaymentMethodPage } from "../pages/PaymentMethodPage.js";
 
 test.beforeAll(async () => {
   validatePassengerData(PASSENGER_DATA);
@@ -26,6 +27,7 @@ test("automated ticket booking", async ({ page }) => {
   const passengerDetailsPage = new PassengerDetailsPage(page);
   const paymentPage = new PaymentPage(page);
   const reviewPage = new ReviewPage(page);
+  const paymentMethodPage = new PaymentMethodPage(page);
 
   // Login
   await loginPage.performLogin(
@@ -57,6 +59,8 @@ test("automated ticket booking", async ({ page }) => {
   );
 
   await reviewPage.processReviewJourneyPage();
+
+  await paymentMethodPage.handlePaymentMethod(PASSENGER_DATA.UPI_ID_CONFIG);
 
   await paymentPage.processPaymentType(PASSENGER_DATA.UPI_ID_CONFIG);
 

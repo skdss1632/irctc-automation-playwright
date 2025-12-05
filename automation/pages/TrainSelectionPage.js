@@ -22,7 +22,7 @@ export class TrainSelectionPage extends BasePage {
   }
 
   async selectCoachType(trainCoach, coachTypeWidget) {
-    const seatElements = coachTypeWidget.locator(".pre-avl").all();
+    const seatElements = await coachTypeWidget.locator(".pre-avl").all();
 
     for (const locator of seatElements) {
       const text = await locator.textContent();
